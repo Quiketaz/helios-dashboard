@@ -3,7 +3,7 @@ import { Zap, Users, TrendingUp, MapPin, Trophy } from 'lucide-react';
 import type { PaxData } from '../types';
 import { StatCard } from '../components/StatCard';
 
-export const DashboardView = ({ paxList, user }: { paxList: PaxData[], user: PaxData }) => (
+export const DashboardView = ({ paxList, user, onPaxClick }: { paxList: PaxData[], user: PaxData, onPaxClick: (pax: PaxData) => void }) => (
   <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
     <div className="lg:col-span-8 space-y-10">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -17,10 +17,14 @@ export const DashboardView = ({ paxList, user }: { paxList: PaxData[], user: Pax
         <h2 className="text-2xl font-black italic text-white uppercase mb-8">Top Performers</h2>
         <div className="space-y-4">
           {paxList.slice(0, 5).map((p, i) => (
-            <div key={p.name} className="flex items-center justify-between p-4 bg-black/40 rounded-2xl border border-zinc-800">
-              <span className="font-bold text-white">#{i+1} {p.name}</span>
+            <button
+              key={p.name}
+              onClick={() => onPaxClick(p)}
+              className="w-full flex items-center justify-between p-4 bg-black/40 rounded-2xl border border-zinc-800 hover:border-yellow-400 hover:bg-black/60 transition-all group"
+            >
+              <span className="font-bold text-white group-hover:text-yellow-400 transition-colors">#{i+1} {p.name}</span>
               <span className="text-xl font-black text-yellow-400">{p.posts}</span>
-            </div>
+            </button>
           ))}
         </div>
       </div>

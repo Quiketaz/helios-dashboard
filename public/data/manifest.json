@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "name": "sample-roster.csv",
+      "path": "/data/sample-roster.csv",
+      "description": "Sample PAX roster - try loading this!",
+      "type": "roster"
+    },
+    {
+      "name": "Helios Q Sheet - Attendance.csv",
+      "path": "/data/Helios Q Sheet - Attendance.csv",
+      "description": "Complete attendance history with Q leads and metrics",
+      "type": "attendance"
+    },
+    {
+      "name": "Helios Q Sheet - Postings Count.csv",
+      "path": "/data/Helios Q Sheet - Postings Count.csv",
+      "description": "Q posting counts and leader analytics",
+      "type": "postings"
+    },
+    {
+      "name": "roster.csv",
+      "path": "/data/roster.csv",
+      "description": "PAX roster with attendance metrics",
+      "type": "roster"
+    },
+    {
+      "name": "archive.csv",
+      "path": "/data/archive.csv",
+      "description": "Historical attendance archive",
+      "type": "roster"
+    }
+  ]
+}

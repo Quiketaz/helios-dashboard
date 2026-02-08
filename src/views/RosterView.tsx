@@ -1,7 +1,7 @@
 import React from 'react';
 import type { PaxData } from '../types';
 
-export const RosterView = ({ filteredPax }: { filteredPax: PaxData[] }) => (
+export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[], onPaxClick: (pax: PaxData) => void }) => (
   <section className="bg-zinc-950 border border-zinc-900 rounded-[2rem] overflow-hidden shadow-2xl">
     <table className="w-full text-left border-collapse">
       <thead>
@@ -15,13 +15,17 @@ export const RosterView = ({ filteredPax }: { filteredPax: PaxData[] }) => (
       </thead>
       <tbody className="divide-y divide-zinc-900">
         {filteredPax.map((p) => (
-          <tr key={p.name} className="hover:bg-zinc-900/20 transition-colors group">
+          <tr
+            key={p.name}
+            onClick={() => onPaxClick(p)}
+            className="hover:bg-zinc-900/20 transition-colors group cursor-pointer"
+          >
             <td className="p-5">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xs font-bold text-yellow-400">
+                <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xs font-bold text-yellow-400 group-hover:border-yellow-400 transition-colors">
                   {p.name[0]}
                 </div>
-                <span className="font-bold text-white">{p.name}</span>
+                <span className="font-bold text-white group-hover:text-yellow-400 transition-colors">{p.name}</span>
               </div>
             </td>
             <td className="p-5 font-black text-white text-center">{p.posts}</td>

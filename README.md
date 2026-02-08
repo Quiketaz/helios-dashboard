@@ -10,7 +10,10 @@ The Helios Dashboard is designed for the F3 (Fitness, Friends, Faith) community 
 
 - **📊 Dashboard View** - Real-time analytics showing total posts, member count, average consistency, and top performers
 - **👥 PAX Roster** - Searchable table with member details including posts, consistency %, last workout date, and awards
-- **🔐 Admin Portal** - Password-protected data ingestor syncing data from Google Sheets or uploading CSV files
+- **🎮 RPG Profile System** - Gamified character sheets with RPG classes, stats, and progression tracking
+- **📅 Q Schedule** - Upcoming workouts with Q leads, times, and locations
+- **🔐 Admin Portal** - Multi-format CSV data ingestion (roster, attendance history, Q analytics)
+- **🌐 Dual Data Sources** - Online Google Sheets sync + local CSV files for training/offline access
 - **🌐 Live Data Integration** - Automatic synchronization with published Google Sheets, with demo fallback
 - **📱 Responsive Design** - Mobile-optimized UI with adaptive navigation
 - **⚡ Optimized Performance** - Built with React Compiler for enhanced rendering efficiency
@@ -85,6 +88,26 @@ VITE_ADMIN_PASSWORD=<admin-password>
 npm run dev
 ```
 
+### Local CSV Data Files
+
+Place training data and local copies in `public/data/`:
+
+```
+public/data/
+├── sample-roster.csv              # Demo data
+├── Helios Q Sheet - Attendance.csv # 3,900+ attendance records ⭐
+├── Helios Q Sheet - Postings Count.csv
+└── manifest.json                  # File listing
+```
+
+Use the **Admin Portal** → "Load Local" to access without internet. Perfect for:
+- 🧠 Model training and analytics
+- 📊 Historical data analysis
+- 🔒 Data privacy (keep sensitive data local)
+- ⚡ Instant loading (no cloud latency)
+
+See [public/data/README.md](public/data/README.md) for detailed CSV format documentation.
+
 The app will be available at `http://localhost:5173`
 
 ### Build
@@ -115,26 +138,98 @@ Interactive table with:
 - Award badges (Cindy 🧱, Mug ☕, Shirt 👕)
 
 ### Admin Portal
-Requires password authentication. Once unlocked, allows:
-- **Sync Cloud** - Fetch latest data from published Google Sheet
-- **Upload CSV** - Import custom CSV files
-- Real-time validation and record count display
+Password-protected multi-source data ingestor:
+
+| Option | Source | Speed | Internet | Best For |
+|--------|--------|-------|----------|----------|
+| **🌐 Sync Cloud** | Google Sheets | Medium | Required | Live updates |
+| **📁 Load Local** | `public/data/` folder | Fast | Not required | Training data, offline |
+| **📤 Upload CSV** | Browser file | Varies | Optional | One-time analysis |
+
+**Auto-Detection:** Intelligently detects and parses three CSV formats:
+- 📊 **Roster** - Member metrics (posts, consistency, awards)
+- 📈 **Attendance** - Historical data (3,900+ records for model training)
+- 🎯 **Postings** - Q leader analytics and engagement
+
+**Features:**
+- Format auto-detection with summary statistics
+- Real-time record count and validation
+- Support for offline training data
+- Formatted results display (different UI for each format)
 
 ## Data Flow
 
 ```
-Google Sheets (Published CSV)
-        ↓
-fetchPaxRoster() / File Upload
-        ↓
-PapaParse (CSV Parsing)
-        ↓
-processRawCSV() (Data Transformation)
-        ↓
-usePaxData Hook (State Management)
-        ↓
-React Components (UI Rendering)
+┌─────────────────────────────────────┐
+│   DATA SOURCES                      │
+├─────────────────────────────────────┤
+│ 🌐 Google Sheets (Cloud)            │
+│ 📁 Local CSV Files (Training Data)  │
+│ 📤 Browser File Upload              │
+└──────────────┬──────────────────────┘
+               ↓
+┌──────────────────────────────────────┐
+│   AUTO-DETECT CSV FORMAT             │
+├──────────────────────────────────────┤
+│ • Roster (Member Metrics)            │
+│ • Attendance (History & Analytics)   │
+│ • Postings (Q Leader Stats)          │
+└──────────────┬──────────────────────┘
+               ↓
+        PapaParse Parser
+               ↓
+    ┌─────────┬────────┬──────────┐
+    ↓         ↓        ↓          ↓
+  Roster  Attendance  Postings  Dashboard
+  Data    Analytics   Rankings    Display
 ```
+
+## CSV Data Formats
+
+Three intelligent CSV parsers handle different data types:
+
+### 1. **Roster Format** - Member Attendance Metrics
+```csv
+Name,BD Count,Consistency,First BD,Last BD,Home AO or Visitor,Cindy,Mug,Shirt
+```
+- Powers dashboard stats, roster table, RPG profiles
+- Ideal for member display and leaderboards
+
+### 2. **Attendance Format** - Complete History (3,900+ Records)
+```csv
+Year,Month,Weekday,Name,BD Count,DD Count,Date,BD,Location Comment,...
+```
+- Perfect for **training machine learning models**
+- Contains temporal, behavioral, and context data
+- Enables trend analysis and pattern recognition
+
+### 3. **Postings Format** - Q Leader Analytics  
+```csv
+Q Name,Date,Posting,...
+```
+- Tracks Q leader frequency and engagement
+- Powers leadership leaderboards and metrics
+
+**See [DATA_INTEGRATION.md](DATA_INTEGRATION.md) for complete guide.**
+
+## Data Flow
+
+```
+Google Sheets (Online) → Fetch CSV
+Local File (public/data/) → Load Local  
+Browser Upload → Choose File
+        ↓
+   Fetch CSV Text
+        ↓
+  detectCSVType()
+        ↓
+   Parse Format
+        ↓
+  Transform Data
+        ↓
+ Save to State
+        ↓
+React Components (UI Display)
 
 ## Data Schema
 

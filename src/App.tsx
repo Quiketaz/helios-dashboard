@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users, Search, Zap, ShieldAlert } from 'lucide-react';
-import type { TabType } from './types';
+import { LayoutDashboard, Users, Search, Zap, ShieldAlert, Calendar } from 'lucide-react';
+import type { TabType, PaxData } from './types';
 import { usePaxData } from './hooks/usePaxData';
+import { useQData } from './hooks/useQData';
 import { Logo } from './components/Logo';
 import { DashboardView } from './views/DashboardView';
 import { RosterView } from './views/RosterView';
+import { ScheduleView } from './views/ScheduleView';
 import { IngestorView } from './views/IngestorView';
+import { ProfileView } from './views/ProfileView';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState<TabType>('DASHBOARD');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedPax, setSelectedPax] = useState<PaxData | null>(null);
   const { paxList, loading, isLive } = usePaxData();
+  const { qList, loading: qLoading, error: qError } = useQData();
 
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-black italic tracking-widest uppercase">SYNCING HELIOS...</div>;
+
+  // Show profile view if a PAX is selected
+  if (selectedPax) {
+    return <ProfileView pax={selectedPax} onBack={() => setSelectedPax(null)} />;
+  }
 
   const filteredPax = paxList.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -22,6 +32,7 @@ const App = () => {
         <div className="hidden lg:block mb-8 text-2xl font-black italic text-white uppercase tracking-tighter">HELIOS<span className="text-yellow-400">.</span></div>
         <NavBtn id="DASHBOARD" active={activeTab} set={setActiveTab} icon={<LayoutDashboard size={20}/>} label="Dashboard" />
         <NavBtn id="ROSTER" active={activeTab} set={setActiveTab} icon={<Users size={20}/>} label="PAX Roster" />
+        <NavBtn id="SCHEDULE" active={activeTab} set={setActiveTab} icon={<Calendar size={20}/>} label="Q Schedule" />
         <div className="mt-auto pt-4 border-t border-zinc-900">
           <NavBtn id="ADMIN" active={activeTab} set={setActiveTab} icon={<ShieldAlert size={20}/>} label="Admin Portal" />
         </div>
@@ -39,8 +50,9 @@ const App = () => {
           </div>
         </header>
         <main className="p-10 max-w-7xl mx-auto">
-          {activeTab === 'DASHBOARD' && <DashboardView paxList={paxList} user={paxList[0]} />}
-          {activeTab === 'ROSTER' && <RosterView filteredPax={filteredPax} />}
+          {activeTab === 'DASHBOARD' && <DashboardView paxList={paxList} user={paxList[0]} onPaxClick={setSelectedPax} />}
+          {activeTab === 'ROSTER' && <RosterView filteredPax={filteredPax} onPaxClick={setSelectedPax} />}
+          {activeTab === 'SCHEDULE' && <ScheduleView qList={qList} loading={qLoading} error={qError} />}
           {activeTab === 'ADMIN' && <IngestorView />}
         </main>
       </div>
