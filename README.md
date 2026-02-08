@@ -1,75 +1,202 @@
-# React + TypeScript + Vite
+# F3 Helios Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React + TypeScript + Vite dashboard for managing fitness community (F3) member data, attendance tracking, and community engagement metrics.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The Helios Dashboard is designed for the F3 (Fitness, Friends, Faith) community to track member participation, consistency, and achievements. It provides real-time insights into attendee metrics, a searchable member roster, and administrative tools for data management.
 
-## React Compiler
+### Key Features
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **📊 Dashboard View** - Real-time analytics showing total posts, member count, average consistency, and top performers
+- **👥 PAX Roster** - Searchable table with member details including posts, consistency %, last workout date, and awards
+- **🔐 Admin Portal** - Password-protected data ingestor syncing data from Google Sheets or uploading CSV files
+- **🌐 Live Data Integration** - Automatic synchronization with published Google Sheets, with demo fallback
+- **📱 Responsive Design** - Mobile-optimized UI with adaptive navigation
+- **⚡ Optimized Performance** - Built with React Compiler for enhanced rendering efficiency
 
-Note: This will impact Vite dev & build performances.
+## Tech Stack
 
-## Expanding the ESLint configuration
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **React** | 19.2 | UI Framework |
+| **TypeScript** | 5.9 | Type-safe development |
+| **Vite** | 7.2 | Build tool & dev server |
+| **Tailwind CSS** | 4.1 | Styling |
+| **Lucide React** | 0.563 | Icon library |
+| **PapaParse** | 5.5 | CSV parsing |
+| **ESLint** | 9.39 | Code linting |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Project Structure
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── components/
+│   └── StatCard.tsx          # Reusable stat card component
+├── hooks/
+│   └── usePaxData.ts         # Custom hook for data fetching & caching
+├── services/
+│   └── dataService.ts        # CSV parsing & Google Sheets integration
+├── views/
+│   ├── DashboardView.tsx     # Main analytics dashboard
+│   ├── RosterView.tsx        # Member roster table
+│   └── IngestorView.tsx      # Admin data management
+├── App.tsx                   # Main application shell
+├── main.tsx                  # Entry point
+├── types.ts                  # TypeScript interfaces
+└── utils.ts                  # Utility functions
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd f3helios-dashboard
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
 ```
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+VITE_HELIOS_SHEET_ID=<your-google-sheet-id>
+VITE_HELIOS_GID=<your-sheet-gid>
+VITE_ADMIN_PASSWORD=<admin-password>
+```
+
+### Development
+
+```bash
+# Start dev server with HMR
+npm run dev
+```
+
+The app will be available at `http://localhost:5173`
+
+### Build
+
+```bash
+# Type check and build for production
+npm run build
+
+# Preview production build locally
+npm run preview
+```
+
+## Features in Detail
+
+### Dashboard View
+Displays aggregate metrics:
+- **Total Posts** - Sum of all member workouts
+- **Total PAX** - Active member count
+- **Avg Consistency** - Average attendance percentage
+- **Top Performers** - Leaderboard of most consistent members
+
+### PAX Roster
+Interactive table with:
+- Member search/filter functionality
+- Post count tracking
+- Consistency percentage with color-coded indicators (green >50%, gray <50%)
+- Last workout date
+- Award badges (Cindy 🧱, Mug ☕, Shirt 👕)
+
+### Admin Portal
+Requires password authentication. Once unlocked, allows:
+- **Sync Cloud** - Fetch latest data from published Google Sheet
+- **Upload CSV** - Import custom CSV files
+- Real-time validation and record count display
+
+## Data Flow
+
+```
+Google Sheets (Published CSV)
+        ↓
+fetchPaxRoster() / File Upload
+        ↓
+PapaParse (CSV Parsing)
+        ↓
+processRawCSV() (Data Transformation)
+        ↓
+usePaxData Hook (State Management)
+        ↓
+React Components (UI Rendering)
+```
+
+## Data Schema
+
+### PaxData Interface
+```typescript
+interface PaxData {
+  name: string;           // Member name
+  posts: number;          // Total workouts attended
+  consistency: number;    // Attendance percentage (0-100)
+  firstBD: string;        // First workout date
+  lastBD: string;         // Most recent workout date
+  homeAo: string;         // Home area/location
+  awards: string[];       // Array of earned awards
+}
+```
+
+## Performance Optimizations
+
+- **React Compiler Enabled** - Automatic memoization and optimization
+- **Vite Fast Refresh** - Instant HMR updates during development
+- **TailwindCSS v4 Vite Plugin** - Optimized CSS processing
+- **Lazy Loading** - View components load on demand
+- **Fallback Data** - Demo data prevents loading failures
+
+## Linting & Quality
+
+```bash
+# Run ESLint
+npm run lint
+```
+
+Uses modern ESLint 9 with TypeScript support and React best practices.
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Deployment
+
+The project is ready for deployment on:
+- Vercel
+- Netlify
+- GitHub Pages
+- Any static hosting service
+
+Build output is in the `dist/` directory after running `npm run build`.
+
+## Contributing
+
+Contributions are welcome! Please ensure:
+1. TypeScript types are properly defined
+2. Code passes ESLint checks
+3. Components are responsive and accessible
+4. Changes are tested locally
+
+## License
+
+MIT
+
+## Support
+
+For issues or questions, please open an issue in the repository.

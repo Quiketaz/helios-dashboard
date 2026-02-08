@@ -19,7 +19,7 @@ export const DashboardView = ({ paxList, user }: { paxList: PaxData[], user: Pax
           {paxList.slice(0, 5).map((p, i) => (
             <div key={p.name} className="flex items-center justify-between p-4 bg-black/40 rounded-2xl border border-zinc-800">
               <span className="font-bold text-white">#{i+1} {p.name}</span>
-              <span className="text-xl font-black text-teal-500">{p.posts}</span>
+              <span className="text-xl font-black text-yellow-400">{p.posts}</span>
             </div>
           ))}
         </div>

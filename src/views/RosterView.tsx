@@ -18,7 +18,7 @@ export const RosterView = ({ filteredPax }: { filteredPax: PaxData[] }) => (
           <tr key={p.name} className="hover:bg-zinc-900/20 transition-colors group">
             <td className="p-5">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xs font-bold text-teal-500">
+                <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xs font-bold text-yellow-400">
                   {p.name[0]}
                 </div>
                 <span className="font-bold text-white">{p.name}</span>

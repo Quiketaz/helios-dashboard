@@ -38,17 +38,17 @@ export const IngestorView = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <div className="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 w-full max-w-md shadow-2xl">
-          <Lock className="text-teal-500 mb-4 mx-auto" size={40} />
+          <Lock className="text-yellow-400 mb-4 mx-auto" size={40} />
           <h2 className="text-2xl font-black italic text-white text-center mb-6 uppercase tracking-tighter">Admin Access</h2>
           <form onSubmit={handleAuth} className="space-y-4">
             <input 
               type="password" 
               placeholder="Password" 
-              className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 outline-none focus:border-teal-500 transition-colors" 
+              className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 outline-none focus:border-yellow-400 transition-colors" 
               value={passkey} 
               onChange={(e) => setPasskey(e.target.value)} 
             />
-            <button className="w-full bg-teal-500 text-black font-black py-3 rounded-xl hover:bg-teal-400 transition-all">UNLOCK PORTAL</button>
+            <button className="w-full bg-yellow-400 text-black font-black py-3 rounded-xl hover:bg-yellow-300 transition-all">UNLOCK PORTAL</button>
           </form>
         </div>
       </div>
@@ -61,10 +61,10 @@ export const IngestorView = () => {
         <h2 className="text-2xl font-black italic text-white mb-2 uppercase tracking-tighter">Data Ingestor</h2>
         <p className="text-zinc-500 text-sm mb-8 font-bold uppercase tracking-widest">Single Source: Google Sheets Cloud</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button onClick={handleSync} className="flex items-center justify-center gap-3 p-6 bg-teal-500/10 border-2 border-teal-500/20 rounded-2xl text-teal-500 font-black hover:bg-teal-500/20 transition-all">
+          <button onClick={handleSync} className="flex items-center justify-center gap-3 p-6 bg-yellow-400/10 border-2 border-yellow-400/20 rounded-2xl text-yellow-400 font-black hover:bg-yellow-400/20 transition-all">
             <RefreshCw className={isProcessing ? 'animate-spin' : ''} /> SYNC CLOUD
           </button>
-          <label className="flex items-center justify-center gap-3 p-6 border-2 border-dashed border-zinc-800 rounded-2xl cursor-pointer text-zinc-500 font-black hover:border-teal-500/50 transition-all">
+          <label className="flex items-center justify-center gap-3 p-6 border-2 border-dashed border-zinc-800 rounded-2xl cursor-pointer text-zinc-500 font-black hover:border-yellow-400/50 transition-all">
             <Upload size={20} /> UPLOAD CSV
             <input type="file" className="hidden" accept=".csv" onChange={(e) => {
                 const file = e.target.files?.[0];
