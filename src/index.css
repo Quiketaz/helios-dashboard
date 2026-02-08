@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Custom Global Reset */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background-color: black;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
