@@ -12,4 +12,6 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+    // This is critical for GitHub Pages
+  base: '/helios-dashboard/',
 })

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Upload, CheckCircle2, RefreshCw, Lock, FolderOpen, BarChart3, Users } from 'lucide-react';
+import { Upload, CheckCircle2, RefreshCw, Lock, FolderOpen, BarChart3, Users, AlertTriangle, AlertCircle, Calendar } from 'lucide-react';
 import { processRawCSV, fetchLocalCSV } from '../services/dataService';
-import { detectCSVType, parseAttendanceCSV, parsePostingsCSV, getAttendanceStats, getPostingStats } from '../services/csvParser';
+import { detectCSVType, parseAttendanceCSV, parsePostingsCSV, parseQScheduleCSV, getAttendanceStats, getPostingStats, getQScheduleStats, validateAttendanceCSV, validatePostingsCSV, validateQScheduleCSV, type ValidationResult, type QScheduleRecord } from '../services/csvParser';
 import type { PaxData } from '../types';
 import type { AttendanceRecord, QPostingAnalytics } from '../services/csvParser';
 
@@ -11,7 +11,7 @@ const SHEET_ID = import.meta.env.VITE_HELIOS_SHEET_ID;
 const GID = import.meta.env.VITE_HELIOS_POSTINGS_GID || import.meta.env.VITE_HELIOS_GID;
 const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=${GID}&single=true&output=csv`;
 
-type DataType = 'roster' | 'attendance' | 'postings' | null;
+type DataType = 'roster' | 'attendance' | 'postings' | 'qschedule' | null;
 
 export const IngestorView = () => {
   const [passkey, setPasskey] = useState('');
@@ -19,10 +19,11 @@ export const IngestorView = () => {
   const [rosterData, setRosterData] = useState<PaxData[] | null>(null);
   const [attendanceData, setAttendanceData] = useState<AttendanceRecord[] | null>(null);
   const [postingsData, setPostingsData] = useState<QPostingAnalytics[] | null>(null);
+  const [qscheduleData, setQScheduleData] = useState<QScheduleRecord[] | null>(null);
   const [dataType, setDataType] = useState<DataType>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [localFilename, setLocalFilename] = useState('');
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [validationWarnings, setValidationWarnings] = useState<ValidationResult | null>(null);
 
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,40 +34,64 @@ export const IngestorView = () => {
   const handleSync = async () => {
     setIsProcessing(true);
     setLoadError(null);
+    setValidationWarnings(null);
     try {
       const res = await fetch(GOOGLE_SHEET_URL);
       const text = await res.text();
       setRosterData(processRawCSV(text));
       setDataType('roster');
     } catch (err) {
-      setLoadError("Sync failed");
+      const e = err as Error;
+      setLoadError(`Sync from Google Sheets failed: ${e.message || String(err)}\n${e.stack || ''}`);
+      console.error(err);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleLoadLocal = async () => {
-    if (!localFilename.trim()) {
-      setLoadError("Please enter a filename");
-      return;
-    }
+  const localCSVFiles = [
+    { name: 'Helios Q Sheet - Q Helios.csv', type: 'Q Schedule' },
+    { name: 'Helios Q Sheet - Attendance.csv', type: 'Attendance' },
+    { name: 'Helios Q Sheet - Postings Count.csv', type: 'Postings' },
+    { name: 'sample-roster.csv', type: 'Roster' },
+  ];
 
+  const handleLoadLocalFile = async (filename: string) => {
     setIsProcessing(true);
     setLoadError(null);
+    setValidationWarnings(null);
     try {
-      const csvText = await fetchLocalCSV(localFilename);
+      const csvText = await fetchLocalCSV(filename);
       const detectedType = detectCSVType(csvText);
       
       if (detectedType === 'roster') {
         setRosterData(processRawCSV(csvText));
+        setDataType('roster');
       } else if (detectedType === 'attendance') {
-        setAttendanceData(parseAttendanceCSV(csvText));
+        const parsed = parseAttendanceCSV(csvText);
+        setAttendanceData(parsed);
+        const validation = validateAttendanceCSV(csvText);
+        setValidationWarnings(validation);
+        setDataType('attendance');
       } else if (detectedType === 'postings') {
-        setPostingsData(parsePostingsCSV(csvText));
+        const parsed = parsePostingsCSV(csvText);
+        setPostingsData(parsed);
+        const validation = validatePostingsCSV(csvText);
+        setValidationWarnings(validation);
+        setDataType('postings');
+      } else if (detectedType === 'qschedule') {
+        const parsed = parseQScheduleCSV(csvText);
+        setQScheduleData(parsed);
+        const validation = validateQScheduleCSV(csvText);
+        setValidationWarnings(validation);
+        setDataType('qschedule');
+      } else {
+        setLoadError("Unable to detect CSV format. Please check headers.");
+        setDataType(null);
       }
-      setDataType(detectedType);
     } catch (err) {
-      setLoadError(`Failed to load: ${localFilename}`);
+      const e = err as Error;
+      setLoadError(`Failed to load: ${filename} — ${e.message || String(err)}\n${e.stack || ''}`);
       console.error(err);
     } finally {
       setIsProcessing(false);
@@ -74,16 +99,48 @@ export const IngestorView = () => {
   };
 
   const handleFileUpload = (csvText: string) => {
-    const detectedType = detectCSVType(csvText);
-    
-    if (detectedType === 'roster') {
-      setRosterData(processRawCSV(csvText));
-    } else if (detectedType === 'attendance') {
-      setAttendanceData(parseAttendanceCSV(csvText));
-    } else if (detectedType === 'postings') {
-      setPostingsData(parsePostingsCSV(csvText));
+    try {
+      const detectedType = detectCSVType(csvText);
+      if (detectedType === 'roster') {
+        setRosterData(processRawCSV(csvText));
+        setDataType('roster');
+      } else if (detectedType === 'attendance') {
+        const parsed = parseAttendanceCSV(csvText);
+        setAttendanceData(parsed);
+        const validation = validateAttendanceCSV(csvText);
+        setValidationWarnings(validation);
+        setDataType('attendance');
+      } else if (detectedType === 'postings') {
+        const parsed = parsePostingsCSV(csvText);
+        setPostingsData(parsed);
+        const validation = validatePostingsCSV(csvText);
+        setValidationWarnings(validation);
+        setDataType('postings');
+      } else if (detectedType === 'qschedule') {
+        const parsed = parseQScheduleCSV(csvText);
+        setQScheduleData(parsed);
+        const validation = validateQScheduleCSV(csvText);
+        setValidationWarnings(validation);
+        setDataType('qschedule');
+      } else {
+        setLoadError("Unable to detect CSV format. Please check headers.");
+        setDataType(null);
+      }
+    } catch (err) {
+      const e = err as Error;
+      setLoadError(`Processing uploaded file failed: ${e.message || String(err)}\n${e.stack || ''}`);
+      console.error(err);
     }
-    setDataType(detectedType);
+  };
+
+  const clearErrors = () => {
+    setLoadError(null);
+    setValidationWarnings(null);
+  };
+
+  const hardRefresh = () => {
+    // full page reload to clear any residual runtime state
+    window.location.reload();
   };
 
   if (!isAuthenticated) {
@@ -127,27 +184,6 @@ export const IngestorView = () => {
             </div>
           </button>
 
-          {/* Load Local CSV */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 p-4 bg-blue-900/20 border-2 border-blue-500/30 rounded-2xl">
-              <FolderOpen className="text-blue-400" size={20} />
-              <input
-                type="text"
-                placeholder="filename.csv"
-                className="flex-1 bg-transparent text-white placeholder-zinc-500 outline-none font-bold text-sm"
-                value={localFilename}
-                onChange={(e) => setLocalFilename(e.target.value)}
-              />
-            </div>
-            <button
-              onClick={handleLoadLocal}
-              disabled={isProcessing || !localFilename.trim()}
-              className="flex items-center justify-center gap-2 p-3 bg-blue-500/20 border border-blue-500/50 rounded-xl text-blue-400 font-black hover:bg-blue-500/30 transition-all disabled:opacity-50 text-sm"
-            >
-              LOAD LOCAL
-            </button>
-          </div>
-
           {/* Upload CSV File */}
           <label className="flex items-center justify-center gap-3 p-6 border-2 border-dashed border-zinc-800 rounded-2xl cursor-pointer text-zinc-500 font-black hover:border-yellow-400/50 hover:text-yellow-400 transition-all">
             <Upload size={20} />
@@ -174,24 +210,121 @@ export const IngestorView = () => {
               }} 
             />
           </label>
+
+          {/* Placeholder for balance (3-column grid) */}
+          <div></div>
+        </div>
+
+        {/* Local CSV Preset Files */}
+        <div className="mt-8">
+          <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">📁 Load Local CSV Files</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {localCSVFiles.map((file) => (
+              <button
+                key={file.name}
+                onClick={() => handleLoadLocalFile(file.name)}
+                disabled={isProcessing}
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-blue-900/20 border-2 border-blue-500/30 rounded-xl text-blue-400 font-bold hover:bg-blue-500/20 hover:border-blue-400 transition-all disabled:opacity-50 text-xs"
+              >
+                <FolderOpen size={18} />
+                <span className="text-center line-clamp-2">{file.name.replace('.csv', '')}</span>
+                <span className="text-blue-600 text-xs">{file.type}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Info Text */}
         <div className="mt-6 space-y-2 text-xs text-zinc-500 leading-relaxed">
-          <p>💡 <strong>Supported Formats:</strong></p>
+          <p>💡 <strong>Load Options:</strong></p>
           <ul className="list-disc list-inside ml-2 space-y-1">
-            <li>📊 <strong>Roster:</strong> PAX attendance metrics (Name, BD Count, Consistency, etc.)</li>
-            <li>📈 <strong>Attendance:</strong> Complete history with Q leads (Year, Month, Name, BD, etc.)</li>
-            <li>🎯 <strong>Postings:</strong> Q leader analytics (Q Name, Posting dates, counts)</li>
+            <li>🌐 <strong>Sync Cloud:</strong> Fetch postings/roster data from Google Sheets</li>
+            <li>📤 <strong>Upload CSV:</strong> Upload any CSV file (auto-detects format)</li>
+            <li>📁 <strong>Local Files:</strong> Quick-load preset CSVs from <code className="bg-black/50 px-2 py-1 rounded">public/data/</code></li>
           </ul>
-          <p className="mt-3">Place CSV files in <code className="bg-black/50 px-2 py-1 rounded">public/data/</code> to load locally.</p>
+          <p className="mt-3"><strong>Supported Formats:</strong> Roster, Attendance, Postings, Q Schedule</p>
         </div>
       </div>
 
       {/* Error Message */}
       {loadError && (
-        <div className="bg-red-900/20 border border-red-500/50 rounded-2xl p-6 text-red-400 font-bold">
-          ⚠️ {loadError}
+        <div className="bg-red-900/20 border border-red-500/50 rounded-2xl p-6 text-red-400 font-bold space-y-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="text-red-400" size={18} />
+                <div className="font-bold">Load Error</div>
+              </div>
+              <div className="text-sm text-red-300 mt-2 whitespace-pre-wrap">{loadError}</div>
+            </div>
+            <div className="flex-shrink-0 flex items-center gap-2">
+              <button onClick={clearErrors} className="px-3 py-2 bg-red-700/40 hover:bg-red-700/60 rounded-md text-sm font-bold">Clear Errors</button>
+              <button onClick={hardRefresh} className="px-3 py-2 bg-zinc-900/40 hover:bg-zinc-900/60 rounded-md text-sm font-bold flex items-center gap-2">
+                <RefreshCw size={14} />
+                Hard Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Validation Warnings/Issues */}
+      {validationWarnings && (
+        <div className="space-y-4">
+          {validationWarnings.isDuplicate && (
+            <div className="bg-yellow-900/20 border border-yellow-500/50 rounded-2xl p-6">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="text-yellow-400 flex-shrink-0 mt-1" size={20} />
+                <div className="flex-1">
+                  <p className="text-yellow-400 font-bold">⚠️ Duplicate Headers Detected</p>
+                  <p className="text-yellow-600 text-sm mt-1">Some column names are repeated. Results may be inconsistent.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {validationWarnings.missingHeaders.length > 0 && (
+            <div className="bg-orange-900/20 border border-orange-500/50 rounded-2xl p-6">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="text-orange-400 flex-shrink-0 mt-1" size={20} />
+                <div className="flex-1">
+                  <p className="text-orange-400 font-bold">⚠️ Missing Required Headers</p>
+                  <p className="text-orange-600 text-sm mt-1">Expected columns not found: <strong>{validationWarnings.missingHeaders.join(', ')}</strong></p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {validationWarnings.rowsWithIssues > 0 && (
+            <div className="bg-red-900/20 border border-red-500/50 rounded-2xl p-6">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="text-red-400 flex-shrink-0 mt-1" size={20} />
+                <div className="flex-1">
+                  <p className="text-red-400 font-bold">🔴 Data Quality Issues ({validationWarnings.rowsWithIssues} rows affected)</p>
+                  <div className="text-red-600 text-sm mt-2 max-h-48 overflow-y-auto">
+                    {validationWarnings.issues.slice(0, 10).map((issue, idx) => (
+                      <div key={idx} className="mb-2 pb-2 border-b border-red-500/20 last:border-0">
+                        <span className="font-bold">Row {issue.row}, {issue.field}:</span> {issue.issue}
+                      </div>
+                    ))}
+                    {validationWarnings.issues.length > 10 && (
+                      <p className="text-red-600 font-bold mt-2">... and {validationWarnings.issues.length - 10} more issues</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="bg-green-900/20 border border-green-500/30 rounded-2xl p-6">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="text-green-400" size={20} />
+              <div>
+                <p className="text-green-400 font-bold">Rows Processed: {validationWarnings.rowsProcessed}</p>
+                <p className="text-green-600 text-sm">Valid rows ready for analysis</p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -312,6 +445,53 @@ export const IngestorView = () => {
             </div>
             <CheckCircle2 className="text-green-500 inline-block mt-6" size={20} />
             <p className="text-green-500 font-bold mt-2">✓ Great for Q leader leaderboards</p>
+          </div>
+        );
+      })()}
+
+      {/* Q Schedule Data Summary */}
+      {dataType === 'qschedule' && qscheduleData && (() => {
+        const stats = getQScheduleStats(qscheduleData);
+        return (
+          <div className="bg-gradient-to-r from-purple-900/20 to-purple-800/10 border border-purple-500/30 rounded-[2rem] p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <Calendar className="text-purple-400" size={24} />
+              <div>
+                <h3 className="text-2xl font-black text-purple-400">Q Schedule</h3>
+                <p className="text-xs text-purple-600">Upcoming workouts & events</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-black/40 border border-purple-500/30 rounded-xl p-4">
+                <p className="text-xs font-bold text-purple-600 uppercase">Total Events</p>
+                <p className="text-2xl font-black text-purple-400">{stats.totalEvents}</p>
+              </div>
+              <div className="bg-black/40 border border-purple-500/30 rounded-xl p-4">
+                <p className="text-xs font-bold text-purple-600 uppercase">Unique Q Leads</p>
+                <p className="text-2xl font-black text-purple-400">{stats.uniqueQLeads}</p>
+              </div>
+              <div className="bg-black/40 border border-purple-500/30 rounded-xl p-4">
+                <p className="text-xs font-bold text-purple-600 uppercase">Event Types</p>
+                <p className="text-2xl font-black text-purple-400">{stats.eventTypes.length}</p>
+              </div>
+              <div className="bg-black/40 border border-purple-500/30 rounded-xl p-4">
+                <p className="text-xs font-bold text-purple-600 uppercase">Date Range</p>
+                <p className="text-sm font-black text-purple-400">{stats.earliestDate} to {stats.latestDate}</p>
+              </div>
+            </div>
+            <div className="mt-6">
+              <p className="text-sm font-bold text-purple-300 mb-3">📅 Event Types Breakdown:</p>
+              <div className="space-y-2">
+                {stats.eventTypes.map((et) => (
+                  <div key={et.type} className="flex items-center justify-between p-3 bg-black/40 border border-purple-500/20 rounded-lg">
+                    <span className="text-white font-bold">{et.type}</span>
+                    <span className="text-purple-400 font-black">{et.count} events</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <CheckCircle2 className="text-green-500 inline-block mt-6" size={20} />
+            <p className="text-green-500 font-bold mt-2">✓ Ready for schedule planning & analysis</p>
           </div>
         );
       })()}

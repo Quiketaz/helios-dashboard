@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import type { PaxData } from '../types';
-import { parseAttendanceCSV, parsePostingsCSV } from './csvParser';
+import { parseAttendanceCSV, parsePostingsCSV, parseQScheduleCSV } from './csvParser';
 
 /**
  * Shared parsing logic used by both the Ingestor (for validation)
@@ -129,4 +129,14 @@ export const fetchPostingsData = async () => {
   if (!gid) throw new Error('VITE_HELIOS_POSTINGS_GID not set');
   const csv = await fetchCSVByGid(gid);
   return parsePostingsCSV(csv);
+};
+
+/**
+ * Fetch Q schedule tab and parse into schedule records
+ */
+export const fetchQScheduleData = async () => {
+  const gid = import.meta.env.VITE_HELIOS_Q_GID;
+  if (!gid) throw new Error('VITE_HELIOS_Q_GID not set');
+  const csv = await fetchCSVByGid(gid);
+  return parseQScheduleCSV(csv);
 };
