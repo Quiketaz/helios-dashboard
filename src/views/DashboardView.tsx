@@ -57,11 +57,21 @@ export const DashboardView = ({ paxList, qList, onPaxClick }: { paxList: PaxData
               </div>
               
               <div className="flex gap-2 mt-auto pt-2 border-t border-zinc-800/50">
-                {p.awards.length > 0 ? p.awards.map(a => (
-                  <span key={a} className="text-sm" title={a}>
-                    {a === 'Cindy' ? '🧱' : a === 'Mug' ? '☕' : '👕'}
-                  </span>
-                )) : <span className="text-[10px] text-zinc-700 font-bold uppercase italic">No Awards</span>}
+                {p.awards.length > 0 ? p.awards.map(a => {
+                  const isShirt = a.toLowerCase().startsWith('shirt');
+                  const shirtOrder = isShirt ? a.split(':')[1] : null;
+                  
+                  return (
+                    <span key={a} className="flex items-center gap-1 text-sm" title={a}>
+                      {a.startsWith('Cindy') ? '🧱' : a.startsWith('Mug') ? '☕' : '👕'}
+                      {shirtOrder && (
+                        <span className="text-[9px] font-black text-yellow-500 bg-yellow-500/10 px-1 rounded border border-yellow-500/20">
+                          #{shirtOrder}
+                        </span>
+                      )}
+                    </span>
+                  );
+                }) : <span className="text-[10px] text-zinc-700 font-bold uppercase italic">No Awards</span>}
               </div>
             </button>
           ))}

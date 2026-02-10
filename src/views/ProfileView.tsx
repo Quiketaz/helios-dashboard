@@ -119,29 +119,35 @@ export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
             </h3>
             {pax.awards.length > 0 ? (
               <div className="space-y-3">
-                {pax.awards.map((award) => (
-                  <div 
-                    key={award} 
-                    className={`flex items-center justify-between p-3 bg-black/40 border rounded-xl transition-all ${
-                      award === 'Shirt' 
-                        ? 'border-yellow-400/50 bg-yellow-400/5 shadow-[0_0_15px_rgba(250,204,21,0.1)]' 
-                        : 'border-zinc-800'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">
-                        {award === 'Cindy' ? '🧱' : award === 'Mug' ? '☕' : '👕'}
-                      </span>
-                      <div>
-                        <span className="font-bold text-white capitalize block">{award}</span>
-                        {award === 'Shirt' && (
-                          <span className="text-[10px] text-yellow-400 font-black uppercase tracking-widest">100 Beatdowns Milestone</span>
-                        )}
+                {pax.awards.map((award) => {
+                  const isShirt = award.toLowerCase().startsWith('shirt');
+                  const shirtOrder = isShirt ? award.split(':')[1] : null;
+                  const displayName = shirtOrder ? `Centurion #${shirtOrder}` : award;
+
+                  return (
+                    <div 
+                      key={award} 
+                      className={`flex items-center justify-between p-3 bg-black/40 border rounded-xl transition-all ${
+                        isShirt 
+                          ? 'border-yellow-400/50 bg-yellow-400/5 shadow-[0_0_15px_rgba(250,204,21,0.1)]' 
+                          : 'border-zinc-800'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">
+                          {award.startsWith('Cindy') ? '🧱' : award.startsWith('Mug') ? '☕' : '👕'}
+                        </span>
+                        <div>
+                          <span className="font-bold text-white capitalize block">{displayName}</span>
+                          {isShirt && (
+                            <span className="text-[10px] text-yellow-400 font-black uppercase tracking-widest">100 Beatdowns Milestone</span>
+                          )}
+                        </div>
                       </div>
+                      {isShirt && <Crown size={16} className="text-yellow-400 animate-pulse" />}
                     </div>
-                    {award === 'Shirt' && <Crown size={16} className="text-yellow-400 animate-pulse" />}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-zinc-500 italic">No achievements yet. Keep grinding!</p>
@@ -158,7 +164,7 @@ export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
               <div className="flex justify-between items-center p-3 bg-black/40 border border-zinc-800 rounded-xl">
                 <div>
                   <span className="text-sm text-zinc-400 uppercase font-bold block">Total Posts</span>
-                  {pax.posts < 100 && !pax.awards.includes('Shirt') && (
+                  {pax.posts < 100 && !pax.awards.some(a => a.toLowerCase().startsWith('shirt')) && (
                     <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-tighter">
                       {100 - pax.posts} more to the 100 Shirt
                     </span>

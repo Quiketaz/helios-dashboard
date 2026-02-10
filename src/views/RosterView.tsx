@@ -39,7 +39,7 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
               <div className="flex gap-2">
                 {p.awards.map(a => (
                   <span key={a} className="grayscale hover:grayscale-0 transition-all cursor-help" title={a}>
-                    {a === 'Cindy' ? '🧱' : a === 'Mug' ? '☕' : '👕'}
+                    {a.startsWith('Cindy') ? '🧱' : a.startsWith('Mug') ? '☕' : '👕'}
                   </span>
                 ))}
               </div>
