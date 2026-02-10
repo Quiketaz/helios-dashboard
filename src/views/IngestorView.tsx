@@ -50,11 +50,65 @@ export const IngestorView = () => {
   };
 
   const localCSVFiles = [
-    { name: 'Helios Q Sheet - Q Helios.csv', type: 'Q Schedule' },
-    { name: 'Helios Q Sheet - Attendance.csv', type: 'Attendance' },
-    { name: 'Helios Q Sheet - Postings Count.csv', type: 'Postings' },
-    { name: 'sample-roster.csv', type: 'Roster' },
+    { name: 'Helios Q Sheet - Q Helios.csv', type: 'Q Schedule', gid: import.meta.env.VITE_HELIOS_Q_GID },
+    { name: 'Helios Q Sheet - Attendance.csv', type: 'Attendance', gid: import.meta.env.VITE_HELIOS_ATTENDANCE_GID },
+    { name: 'Helios Q Sheet - Postings Count.csv', type: 'Postings', gid: import.meta.env.VITE_HELIOS_POSTINGS_GID || import.meta.env.VITE_HELIOS_GID },
+    { name: 'sample-roster.csv', type: 'Roster', gid: import.meta.env.VITE_HELIOS_GID },
   ];
+
+  const makeSheetUrl = (gid?: string | number) => {
+    if (!SHEET_ID || !gid) return null;
+    return `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=${gid}&single=true&output=csv`;
+  };
+
+  const handleSyncFor = async (gid?: string | number, fallbackName?: string) => {
+    setIsProcessing(true);
+    setLoadError(null);
+    setValidationWarnings(null);
+    try {
+      const url = makeSheetUrl(gid);
+      if (!url) {
+        setLoadError(`No cloud URL available for ${fallbackName || 'this file'}`);
+        return;
+      }
+      const res = await fetch(url);
+      const text = await res.text();
+
+      // reuse the same detection & parsing logic as local file loader
+      const detectedType = detectCSVType(text);
+      if (detectedType === 'roster') {
+        setRosterData(processRawCSV(text));
+        setDataType('roster');
+      } else if (detectedType === 'attendance') {
+        const parsed = parseAttendanceCSV(text);
+        setAttendanceData(parsed);
+        const validation = validateAttendanceCSV(text);
+        setValidationWarnings(validation);
+        setDataType('attendance');
+      } else if (detectedType === 'postings') {
+        const parsed = parsePostingsCSV(text);
+        setPostingsData(parsed);
+        const validation = validatePostingsCSV(text);
+        setValidationWarnings(validation);
+        setDataType('postings');
+      } else if (detectedType === 'qschedule') {
+        const parsed = parseQScheduleCSV(text);
+        setQScheduleData(parsed);
+        const validation = validateQScheduleCSV(text);
+        setValidationWarnings(validation);
+        setDataType('qschedule');
+      } else {
+        setLoadError('Unable to detect CSV format from cloud.');
+        setDataType(null);
+      }
+    } catch (err) {
+      const e = err as Error;
+      setLoadError(`Sync from Google Sheets failed: ${e.message || String(err)}\n${e.stack || ''}`);
+      console.error(err);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleLoadLocalFile = async (filename: string) => {
     setIsProcessing(true);
@@ -220,16 +274,29 @@ export const IngestorView = () => {
           <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">📁 Load Local CSV Files</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {localCSVFiles.map((file) => (
-              <button
-                key={file.name}
-                onClick={() => handleLoadLocalFile(file.name)}
-                disabled={isProcessing}
-                className="flex flex-col items-center justify-center gap-2 p-4 bg-blue-900/20 border-2 border-blue-500/30 rounded-xl text-blue-400 font-bold hover:bg-blue-500/20 hover:border-blue-400 transition-all disabled:opacity-50 text-xs"
-              >
-                <FolderOpen size={18} />
-                <span className="text-center line-clamp-2">{file.name.replace('.csv', '')}</span>
-                <span className="text-blue-600 text-xs">{file.type}</span>
-              </button>
+              <div key={file.name} className="flex flex-col items-stretch gap-2">
+                <button
+                  onClick={() => handleLoadLocalFile(file.name)}
+                  disabled={isProcessing}
+                  className="flex flex-col items-center justify-center gap-2 p-4 bg-blue-900/20 border-2 border-blue-500/30 rounded-xl text-blue-400 font-bold hover:bg-blue-500/20 hover:border-blue-400 transition-all disabled:opacity-50 text-xs"
+                >
+                  <FolderOpen size={18} />
+                  <span className="text-center line-clamp-2">{file.name.replace('.csv', '')}</span>
+                  <span className="text-blue-600 text-xs">{file.type}</span>
+                </button>
+
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => handleSyncFor((file as any).gid, file.name)}
+                    disabled={isProcessing || !(file as any).gid}
+                    title={((file as any).gid) ? `Sync cloud for ${file.name}` : 'No cloud GID configured'}
+                    className="flex items-center justify-center gap-2 w-full p-2 bg-transparent border-2 border-dashed border-zinc-800 rounded-xl text-zinc-400 hover:border-yellow-400/50 hover:text-yellow-400 transition-all disabled:opacity-40 text-xs"
+                  >
+                    <RefreshCw size={14} />
+                    <span className="font-bold">SYNC CLOUD</span>
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </div>

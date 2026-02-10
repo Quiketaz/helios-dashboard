@@ -1,4 +1,4 @@
-import React from 'react';
+//import React from 'react';
 import { Sword, Shield, Zap, Crown, Award, Calendar, MapPin, TrendingUp } from 'lucide-react';
 import type { PaxData } from '../types';
 import { calculateRPGStats, getClassColor, getClassBgColor, getClassTextColor } from '../utils';
@@ -9,7 +9,7 @@ interface ProfileViewProps {
 }
 
 export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
-  const stats = calculateRPGStats(pax, 100); // Placeholder for total PAX count
+  const stats = calculateRPGStats(pax); // Placeholder for total PAX count
   const classColor = getClassColor(stats.class);
   const classBg = getClassBgColor(stats.class);
   const classText = getClassTextColor(stats.class);

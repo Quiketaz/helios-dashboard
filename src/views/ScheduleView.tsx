@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Calendar, Clock, MapPin, User, AlertCircle, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { QRecord } from '../types';
 

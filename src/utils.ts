@@ -20,7 +20,7 @@ export const determineRPGClass = (consistency: number): RPGClass => {
 /**
  * Calculate RPG attributes from PAX data
  */
-export const calculateRPGStats = (pax: PaxData, totalPaxCount: number): RPGStats => {
+export const calculateRPGStats = (pax: PaxData): RPGStats => {
   const level = calculateLevel(pax.posts);
   const stamina = Math.min(100, (pax.posts / 250) * 100); // Normalize to 0-100 based on typical max posts
   const agility = pax.consistency; // Consistency is directly Agility

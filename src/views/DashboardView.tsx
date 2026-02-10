@@ -1,9 +1,9 @@
-import React from 'react';
-import { Zap, Users, TrendingUp, MapPin, Trophy } from 'lucide-react';
+//import React from 'react';
+import { Zap, Users, TrendingUp, MapPin } from 'lucide-react';
 import type { PaxData } from '../types';
 import { StatCard } from '../components/StatCard';
 
-export const DashboardView = ({ paxList, user, onPaxClick }: { paxList: PaxData[], user: PaxData, onPaxClick: (pax: PaxData) => void }) => (
+export const DashboardView = ({ paxList, onPaxClick }: { paxList: PaxData[], user: PaxData, onPaxClick: (pax: PaxData) => void }) => (
   <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
     <div className="lg:col-span-8 space-y-10">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

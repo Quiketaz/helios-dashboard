@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { LayoutDashboard, Users, Search, Zap, ShieldAlert, Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { LayoutDashboard, Users, Search, ShieldAlert, Calendar } from 'lucide-react';
 import type { TabType, PaxData } from './types';
 import { usePaxData } from './hooks/usePaxData';
 import { useQData } from './hooks/useQData';
@@ -14,7 +14,7 @@ const App = () => {
   const [activeTab, setActiveTab] = useState<TabType>('DASHBOARD');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPax, setSelectedPax] = useState<PaxData | null>(null);
-  const { paxList, loading, isLive } = usePaxData();
+  const { paxList, loading } = usePaxData();
   const { qList, loading: qLoading, error: qError } = useQData();
 
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-black italic tracking-widest uppercase">SYNCING HELIOS...</div>;

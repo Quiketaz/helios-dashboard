@@ -1,4 +1,4 @@
-import React from 'react';
+//import React from 'react';
 import type { PaxData } from '../types';
 
 export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[], onPaxClick: (pax: PaxData) => void }) => (
