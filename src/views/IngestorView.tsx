@@ -13,6 +13,12 @@ const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/p
 
 type DataType = 'roster' | 'attendance' | 'postings' | 'qschedule' | null;
 
+interface LocalFileConfig {
+  name: string;
+  type: string;
+  gid?: string;
+}
+
 export const IngestorView = () => {
   const [passkey, setPasskey] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -49,7 +55,7 @@ export const IngestorView = () => {
     }
   };
 
-  const localCSVFiles = [
+  const localCSVFiles: LocalFileConfig[] = [
     { name: 'Helios Q Sheet - Q Helios.csv', type: 'Q Schedule', gid: import.meta.env.VITE_HELIOS_Q_GID },
     { name: 'Helios Q Sheet - Attendance.csv', type: 'Attendance', gid: import.meta.env.VITE_HELIOS_ATTENDANCE_GID },
     { name: 'Helios Q Sheet - Postings Count.csv', type: 'Postings', gid: import.meta.env.VITE_HELIOS_POSTINGS_GID || import.meta.env.VITE_HELIOS_GID },
@@ -287,9 +293,9 @@ export const IngestorView = () => {
 
                 <div className="flex items-center justify-center gap-2">
                   <button
-                    onClick={() => handleSyncFor((file as any).gid, file.name)}
-                    disabled={isProcessing || !(file as any).gid}
-                    title={((file as any).gid) ? `Sync cloud for ${file.name}` : 'No cloud GID configured'}
+                    onClick={() => handleSyncFor(file.gid, file.name)}
+                    disabled={isProcessing || !file.gid}
+                    title={file.gid ? `Sync cloud for ${file.name}` : 'No cloud GID configured'}
                     className="flex items-center justify-center gap-2 w-full p-2 bg-transparent border-2 border-dashed border-zinc-800 rounded-xl text-zinc-400 hover:border-yellow-400/50 hover:text-yellow-400 transition-all disabled:opacity-40 text-xs"
                   >
                     <RefreshCw size={14} />

@@ -1,4 +1,4 @@
-//import React from 'react';
+import React from 'react';
 import { Sword, Shield, Zap, Crown, Award, Calendar, MapPin, TrendingUp } from 'lucide-react';
 import type { PaxData } from '../types';
 import { calculateRPGStats, getClassColor, getClassBgColor, getClassTextColor } from '../utils';
@@ -8,37 +8,37 @@ interface ProfileViewProps {
   onBack: () => void;
 }
 
+interface StatBarProps {
+  label: string;
+  value: number;
+  max?: number;
+  icon: React.ElementType;
+  color: string;
+}
+
+const StatBar = ({ label, value, max = 100, icon: Icon, color }: StatBarProps) => (
+  <div className="space-y-2">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <Icon className={color} size={18} />
+        <span className="text-xs md:text-sm font-bold text-zinc-300 uppercase tracking-widest">{label}</span>
+      </div>
+      <span className="text-sm md:text-base font-black text-yellow-400">{value}/{max}</span>
+    </div>
+    <div className="w-full bg-black/50 rounded-full h-3 border border-zinc-800 overflow-hidden">
+      <div
+        className={`h-full bg-gradient-to-r ${color === 'text-yellow-400' ? 'from-yellow-500 to-yellow-300' : 'from-cyan-500 to-blue-400'} rounded-full transition-all duration-500`}
+        style={{ width: `${(value / max) * 100}%` }}
+      />
+    </div>
+  </div>
+);
+
 export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
-  const stats = calculateRPGStats(pax); // Placeholder for total PAX count
+  const stats = calculateRPGStats(pax); // Calculate RPG metrics based on PAX attendance
   const classColor = getClassColor(stats.class);
   const classBg = getClassBgColor(stats.class);
   const classText = getClassTextColor(stats.class);
-
-  interface StatBarProps {
-    label: string;
-    value: number;
-    max?: number;
-    icon: React.ElementType;
-    color: string;
-  }
-
-  const StatBar = ({ label, value, max = 100, icon: Icon, color }: StatBarProps) => (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Icon className={color} size={18} />
-          <span className="text-xs md:text-sm font-bold text-zinc-300 uppercase tracking-widest">{label}</span>
-        </div>
-        <span className="text-sm md:text-base font-black text-yellow-400">{value}/{max}</span>
-      </div>
-      <div className="w-full bg-black/50 rounded-full h-3 border border-zinc-800 overflow-hidden">
-        <div
-          className={`h-full bg-gradient-to-r ${color === 'text-yellow-400' ? 'from-yellow-500 to-yellow-300' : 'from-cyan-500 to-blue-400'} rounded-full transition-all duration-500`}
-          style={{ width: `${(value / max) * 100}%` }}
-        />
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-black to-zinc-900 pb-20">
