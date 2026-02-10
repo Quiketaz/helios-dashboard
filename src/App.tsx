@@ -72,7 +72,7 @@ const App = () => {
           {activeTab === 'ROSTER' && <RosterView filteredPax={filteredPax} onPaxClick={setSelectedPax} />}
           {activeTab === 'SCHEDULE' && <ScheduleView qList={qList} loading={qLoading} error={qError} />}
           {activeTab === 'ADMIN' && <IngestorView />}
-          {(activeTab as string) === 'ABOUT' && <AboutView />}
+          {activeTab === 'ABOUT' && <AboutView />}
         </main>
       </div>
     </div>
