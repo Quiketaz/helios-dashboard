@@ -18,7 +18,7 @@ export const DashboardView = ({ paxList, qList, onPaxClick }: { paxList: PaxData
 
     return [...qList]
       .filter(q => {
-        try { return parseDate(q.date) >= today; }
+        try { return parseDate(q.date) > today; }
         catch { return false; }
       })
       .sort((a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime())[0];
