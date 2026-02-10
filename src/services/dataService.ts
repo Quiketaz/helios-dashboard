@@ -63,7 +63,7 @@ export const processRawCSV = (csvString: string): PaxData[] => {
           awards: [
             row['Cindy'] === 'X' ? 'Cindy' : '',
             row['Mug'] === 'X' ? 'Mug' : '',
-            row['Shirt'] === 'X' || row['Shirt'] === '1' ? 'Shirt' : ''
+            row['Shirt'] && row['Shirt'] !== '' ? `Shirt:${row['Shirt']}` : ''
           ].filter(Boolean)
         };
       }).filter((p): p is PaxData => p !== null);

@@ -49,8 +49,8 @@ const App = () => {
             <input type="text" placeholder="Search PAX..." className="bg-zinc-900 border border-zinc-800 rounded-xl py-2 pl-10 pr-4 text-sm w-full outline-none" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
         </header>
-        <main className="p-10 max-w-7xl mx-auto">
-          {activeTab === 'DASHBOARD' && <DashboardView paxList={paxList} user={paxList[0]} onPaxClick={setSelectedPax} />}
+        <main className="p-4 md:p-10 max-w-7xl mx-auto">
+          {activeTab === 'DASHBOARD' && <DashboardView paxList={paxList} qList={qList} onPaxClick={setSelectedPax} />}
           {activeTab === 'ROSTER' && <RosterView filteredPax={filteredPax} onPaxClick={setSelectedPax} />}
           {activeTab === 'SCHEDULE' && <ScheduleView qList={qList} loading={qLoading} error={qError} />}
           {activeTab === 'ADMIN' && <IngestorView />}

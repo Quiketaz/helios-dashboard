@@ -39,7 +39,16 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
               <div className="flex gap-2">
                 {p.awards.map(a => (
                   <span key={a} className="grayscale hover:grayscale-0 transition-all cursor-help" title={a}>
-                    {a.startsWith('Cindy') ? '🧱' : a.startsWith('Mug') ? '☕' : '👕'}
+                    {a.startsWith('Cindy') ? '🧱' : a.startsWith('Mug') ? '☕' : (
+                      <span className="relative inline-block">
+                        👕
+                        {a.includes(':') && (
+                          <span className="absolute -top-1 -right-1 bg-yellow-400 text-[8px] text-black font-black px-0.5 rounded-sm leading-none">
+                            {a.split(':')[1]}
+                          </span>
+                        )}
+                      </span>
+                    )}
                   </span>
                 ))}
               </div>
@@ -50,23 +59,35 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
     </table>
 
     {/* Mobile Card View - Better for small screens */}
-    <div className="md:hidden divide-y divide-zinc-900">
+    <div className="md:hidden divide-y divide-zinc-900/50">
       {filteredPax.map((p) => (
         <div
           key={p.name}
           onClick={() => onPaxClick(p)}
-          className="p-5 hover:bg-zinc-900/20 active:bg-zinc-900/40 transition-colors flex items-center justify-between"
+          className="p-4 hover:bg-zinc-900/20 active:bg-zinc-900/40 transition-colors flex items-center justify-between group"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-sm font-bold text-yellow-400">
+            <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-lg font-black text-yellow-400 group-active:scale-95 transition-transform">
               {p.name[0]}
             </div>
             <div>
               <div className="font-bold text-white">{p.name}</div>
-              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Last: {p.lastBD}</div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Last: {p.lastBD}</div>
+                <div className="flex gap-1">
+                  {p.awards.map(a => (
+                    <span key={a} className="text-xs">
+                      {a.startsWith('Cindy') ? '🧱' : a.startsWith('Mug') ? '☕' : '👕'}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-          <div className="text-right">
+          <div className="flex flex-col items-end gap-1">
+            {p.awards.some(a => a.toLowerCase().startsWith('shirt')) && (
+              <span className="text-[9px] font-black text-yellow-400 border border-yellow-400/30 bg-yellow-400/10 px-1.5 py-0.5 rounded-md uppercase tracking-tighter">Centurion</span>
+            )}
             <div className="text-lg font-black text-yellow-400">{p.posts}</div>
             <div className="text-[10px] font-bold text-zinc-600 uppercase">Posts</div>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logoImg from '../assets/logo.png';
 
 interface LogoProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -27,7 +28,7 @@ export const Logo: React.FC<LogoProps> = ({ size = 'md', className = '' }) => {
   return (
     <div className={`relative flex-shrink-0 ${sizeMap[size]} ${className}`}>
       <img
-        src="/logo.png"
+        src={logoImg}
         alt="F3 Helios Logo"
         className="w-full h-full object-contain"
         onError={() => setHasError(true)}
