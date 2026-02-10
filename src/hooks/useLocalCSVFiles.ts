@@ -25,7 +25,7 @@ export const useLocalCSVFiles = () => {
           // If no manifest, provide empty array - users can still type filename
           setFiles([]);
         }
-      } catch (err) {
+      } catch {
         // No manifest found - that's okay
         console.log('No manifest.json found in /data folder');
         setFiles([]);

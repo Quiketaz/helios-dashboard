@@ -98,8 +98,8 @@ export const parseAttendanceCSV = (csvText: string): AttendanceRecord[] => {
   Papa.parse(csvText, {
     header: true,
     skipEmptyLines: true,
-    complete: (results) => {
-      results.data.forEach((row: any) => {
+    complete: (results: Papa.ParseResult<Record<string, string>>) => {
+      results.data.forEach((row) => {
         const date = row['Date'];
         const name = row['Name'];
         
@@ -122,6 +122,13 @@ export const parseAttendanceCSV = (csvText: string): AttendanceRecord[] => {
   return records;
 };
 
+interface GroupedPosting {
+  name: string;
+  qCount: number;
+  recentQs: string[];
+  dates: string[];
+}
+
 /**
  * Parse Q Posting Counts CSV format
  */
@@ -131,10 +138,10 @@ export const parsePostingsCSV = (csvText: string): QPostingAnalytics[] => {
   Papa.parse(csvText, {
     header: true,
     skipEmptyLines: true,
-    complete: (results) => {
-      const grouped: Record<string, any> = {};
+    complete: (results: Papa.ParseResult<Record<string, string>>) => {
+      const grouped: Record<string, GroupedPosting> = {};
       
-      results.data.forEach((row: any) => {
+      results.data.forEach((row) => {
         const qName = row['Q Name'] || row['Q'];
         if (!qName || !qName.trim()) return;
         
@@ -156,13 +163,13 @@ export const parsePostingsCSV = (csvText: string): QPostingAnalytics[] => {
       });
       
       // Convert to final format
-      Object.values(grouped).forEach((item: any) => {
+      Object.values(grouped).forEach((item) => {
         analytics.push({
           name: item.name,
           qCount: item.qCount,
           recentQs: item.recentQs.slice(-5), // Last 5 Qs
           lastQ: item.recentQs[item.recentQs.length - 1] || 'N/A',
-          consistency: Math.round((item.qCount / (365 / 52)) * 100), // Rough consistency estimate
+          consistency: Math.min(100, Math.round((item.qCount / (365 / 52)) * 100)), // Cap at 100%
         });
       });
     },
@@ -180,8 +187,8 @@ export const parseQScheduleCSV = (csvText: string): QScheduleRecord[] => {
   Papa.parse(csvText, {
     header: true,
     skipEmptyLines: true,
-    complete: (results) => {
-      results.data.forEach((row: any) => {
+    complete: (results: Papa.ParseResult<Record<string, string>>) => {
+      results.data.forEach((row) => {
         const date = row['Date'];
         const month = row['Month'];
         
@@ -229,7 +236,7 @@ export const getPostingStats = (analytics: QPostingAnalytics[]) => {
   return {
     totalQs: analytics.reduce((sum, a) => sum + a.qCount, 0),
     topQs: analytics.slice(0, 5),
-    averageQsPerLeader: Math.round(analytics.reduce((sum, a) => sum + a.qCount, 0) / analytics.length),
+    averageQsPerLeader: analytics.length > 0 ? Math.round(analytics.reduce((sum, a) => sum + a.qCount, 0) / analytics.length) : 0,
   };
 };
 
@@ -251,8 +258,8 @@ export const validateAttendanceCSV = (csvText: string): ValidationResult => {
   Papa.parse(csvText, {
     header: true,
     skipEmptyLines: true,
-    complete: (results) => {
-      if (results.meta && results.meta.fields) {
+    complete: (results: Papa.ParseResult<Record<string, string>>) => {
+      if (results.meta?.fields) {
         headerRow = results.meta.fields;
         // Check for duplicate headers
         const headerSet = new Set<string>();
@@ -273,7 +280,7 @@ export const validateAttendanceCSV = (csvText: string): ValidationResult => {
       }
 
       // Validate data rows
-      results.data.forEach((row: any, idx: number) => {
+      results.data.forEach((row, idx) => {
         const date = row['Date'];
         const name = row['Name'];
         let rowHasIssue = false;
@@ -322,8 +329,8 @@ export const validatePostingsCSV = (csvText: string): ValidationResult => {
   Papa.parse(csvText, {
     header: true,
     skipEmptyLines: true,
-    complete: (results) => {
-      if (results.meta && results.meta.fields) {
+    complete: (results: Papa.ParseResult<Record<string, string>>) => {
+      if (results.meta?.fields) {
         headerRow = results.meta.fields;
         const headerSet = new Set<string>();
         for (const h of headerRow) {
@@ -340,7 +347,7 @@ export const validatePostingsCSV = (csvText: string): ValidationResult => {
         }
       }
 
-      results.data.forEach((row: any, idx: number) => {
+      results.data.forEach((row, idx) => {
         const qName = row['Q Name'] || row['Q'];
         if (qName && qName.trim()) {
           result.rowsProcessed++;
@@ -373,8 +380,8 @@ export const validateQScheduleCSV = (csvText: string): ValidationResult => {
   Papa.parse(csvText, {
     header: true,
     skipEmptyLines: true,
-    complete: (results) => {
-      if (results.meta && results.meta.fields) {
+    complete: (results: Papa.ParseResult<Record<string, string>>) => {
+      if (results.meta?.fields) {
         headerRow = results.meta.fields;
         const headerSet = new Set<string>();
         for (const h of headerRow) {
@@ -393,7 +400,7 @@ export const validateQScheduleCSV = (csvText: string): ValidationResult => {
         }
       }
 
-      results.data.forEach((row: any, idx: number) => {
+      results.data.forEach((row, idx) => {
         const date = row['Date'];
         let rowHasIssue = false;
 

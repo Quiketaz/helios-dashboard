@@ -48,8 +48,8 @@ export const processRawCSV = (csvString: string): PaxData[] => {
 
       return lines.join('\n');
     },
-    complete: (results) => {
-      processedData = results.data.map((row: any) => {
+    complete: (results: Papa.ParseResult<Record<string, string>>) => {
+      processedData = results.data.map((row) => {
         const name = row['Name'];
         if (!name || name.trim() === "") return null;
         

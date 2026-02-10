@@ -14,7 +14,15 @@ export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
   const classBg = getClassBgColor(stats.class);
   const classText = getClassTextColor(stats.class);
 
-  const StatBar = ({ label, value, max = 100, icon: Icon, color }: any) => (
+  interface StatBarProps {
+    label: string;
+    value: number;
+    max?: number;
+    icon: React.ElementType;
+    color: string;
+  }
+
+  const StatBar = ({ label, value, max = 100, icon: Icon, color }: StatBarProps) => (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
