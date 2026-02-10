@@ -1,9 +1,25 @@
-//import React from 'react';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { PaxData } from '../types';
 
-export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[], onPaxClick: (pax: PaxData) => void }) => (
-  <section className="bg-zinc-950 border border-zinc-900 rounded-[2rem] overflow-hidden shadow-2xl mb-24 lg:mb-0">
-    <table className="w-full text-left border-collapse hidden md:table">
+const ITEMS_PER_PAGE = 15;
+
+export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[], onPaxClick: (pax: PaxData) => void }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Reset to first page when search results change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredPax]);
+
+  const totalPages = Math.ceil(filteredPax.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedPax = filteredPax.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  return (
+    <div className="space-y-6 mb-24 lg:mb-0">
+      <section className="bg-zinc-950 border border-zinc-900 rounded-[2rem] overflow-hidden shadow-2xl">
+        <table className="w-full text-left border-collapse hidden md:table">
       <thead>
         <tr className="bg-zinc-900/50">
           <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest">PAX Name</th>
@@ -14,7 +30,7 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
         </tr>
       </thead>
       <tbody className="divide-y divide-zinc-900">
-        {filteredPax.map((p) => (
+        {paginatedPax.map((p) => (
           <tr
             key={p.name}
             onClick={() => onPaxClick(p)}
@@ -60,7 +76,7 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
 
     {/* Mobile Card View - Better for small screens */}
     <div className="md:hidden divide-y divide-zinc-900/50">
-      {filteredPax.map((p) => (
+      {paginatedPax.map((p) => (
         <div
           key={p.name}
           onClick={() => onPaxClick(p)}
@@ -95,4 +111,34 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
       ))}
     </div>
   </section>
-);
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-zinc-900/50 border border-zinc-800 rounded-2xl shadow-lg">
+          <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+            Showing <span className="text-white">{startIndex + 1}</span> to <span className="text-white">{Math.min(startIndex + ITEMS_PER_PAGE, filteredPax.length)}</span> of <span className="text-yellow-400">{filteredPax.length}</span> PAX
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="p-2 bg-zinc-800 border border-zinc-700 rounded-xl text-yellow-400 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-zinc-700 active:scale-95 transition-all"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <div className="text-sm font-black text-white bg-black/40 px-4 py-2 rounded-lg border border-zinc-800">
+              PAGE {currentPage} <span className="text-zinc-600 mx-1">/</span> {totalPages}
+            </div>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="p-2 bg-zinc-800 border border-zinc-700 rounded-xl text-yellow-400 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-zinc-700 active:scale-95 transition-all"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

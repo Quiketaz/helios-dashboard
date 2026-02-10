@@ -8,8 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "clean": "rm -rf dist node_modules/.cache/gh-pages",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "deploy:force": "npm run clean && npm run deploy"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
