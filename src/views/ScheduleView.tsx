@@ -133,66 +133,58 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
         </div>
       ) : (
         <div className="grid gap-4">
-          {weekEvents.map((q, idx) => (
-          <div
-            key={idx}
-            className="bg-gradient-to-r from-zinc-900/80 to-black/80 border border-yellow-500/30 rounded-3xl p-8 hover:border-yellow-400 hover:shadow-lg hover:shadow-yellow-400/20 transition-all group"
-          >
-            <div className="grid md:grid-cols-5 gap-6">
-              {/* Date & Day */}
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="text-yellow-400" size={20} />
-                  <span className="text-xs font-black text-zinc-500 uppercase tracking-widest">Date</span>
-                </div>
-                <div>
-                  <p className="text-2xl font-black text-white">{q.date}</p>
-                  <p className="text-sm font-bold text-yellow-400">{q.day}</p>
-                </div>
-              </div>
+          {weekEvents.map((q, idx) => {
+            const dateObj = parseDate(q.date);
+            const dayNum = dateObj.getDate();
+            const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short' });
 
-              {/* Time */}
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="text-yellow-400" size={20} />
-                  <span className="text-xs font-black text-zinc-500 uppercase tracking-widest">Time</span>
+            return (
+              <div
+                key={idx}
+                className="relative bg-zinc-900 border border-zinc-800 rounded-3xl p-6 md:p-8 hover:border-yellow-400/50 transition-all group overflow-hidden"
+              >
+                <div className="absolute right-0 top-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                  <Calendar size={120} />
                 </div>
-                <p className="text-2xl font-black text-white">{q.time || 'N/A'}</p>
-              </div>
 
-              {/* Type */}
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-2 mb-2">
-                  <Zap className="text-yellow-400" size={20} />
-                  <span className="text-xs font-black text-zinc-500 uppercase tracking-widest">Type</span>
-                </div>
-                <div className="inline-block px-3 py-1 bg-yellow-400/10 border border-yellow-400/30 rounded-lg">
-                  <p className="text-sm font-bold text-yellow-400">{q.type || 'Workout'}</p>
-                </div>
-              </div>
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                  {/* Date Block */}
+                  <div className="flex-shrink-0 flex flex-col items-center justify-center bg-black/40 rounded-2xl p-4 w-full md:w-32 border border-zinc-800/50">
+                    <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest">{q.day}</span>
+                    <span className="text-4xl font-black text-white leading-none my-1">{dayNum}</span>
+                    <span className="text-sm font-bold text-yellow-400 uppercase">{monthShort}</span>
+                  </div>
 
-              {/* Q Lead */}
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-2 mb-2">
-                  <User className="text-yellow-400" size={20} />
-                  <span className="text-xs font-black text-zinc-500 uppercase tracking-widest">Q Lead</span>
-                </div>
-                <p className="text-lg font-black text-white group-hover:text-yellow-400 transition-colors">
-                  {q.q || 'TBD'}
-                </p>
-              </div>
+                  {/* Info Block */}
+                  <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-3">
+                    <div>
+                      <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                        <User size={14} className="text-yellow-400" />
+                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Q Lead</span>
+                      </div>
+                      <div className="text-3xl md:text-4xl font-black text-white group-hover:text-yellow-400 transition-colors">
+                        {q.q || 'OPEN'}
+                      </div>
+                    </div>
 
-              {/* Location / Notes */}
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-2 mb-2">
-                  <MapPin className="text-yellow-400" size={20} />
-                  <span className="text-xs font-black text-zinc-500 uppercase tracking-widest">Location</span>
+                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                      <div className="flex items-center gap-1.5 bg-zinc-800 px-3 py-1.5 rounded-lg">
+                        <Clock size={14} className="text-zinc-400" />
+                        <span className="text-sm font-bold text-zinc-200">{q.time || '05:30'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-zinc-800 px-3 py-1.5 rounded-lg">
+                        <Zap size={14} className="text-yellow-400" />
+                        <span className="text-sm font-bold text-zinc-200">{q.type || 'Bootcamp'}</span>
+                      </div>
+                      {q.notes && (
+                        <span className="text-sm text-zinc-500 italic border-l border-zinc-700 pl-3">{q.notes}</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <p className="text-sm font-bold text-zinc-300">{q.notes || 'TBD'}</p>
               </div>
-            </div>
-          </div>
-        ))}
+            );
+          })}
         </div>
       )}
 

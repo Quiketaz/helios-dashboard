@@ -44,6 +44,7 @@ src/
 │   ├── DashboardView.tsx     # Main analytics dashboard
 │   ├── RosterView.tsx        # Member roster table
 │   └── IngestorView.tsx      # Admin data management
+│   └── ScheduleView.tsx      # Weekly Q schedule grid
 ├── App.tsx                   # Main application shell
 ├── main.tsx                  # Entry point
 ├── types.ts                  # TypeScript interfaces
@@ -272,13 +273,24 @@ Uses modern ESLint 9 with TypeScript support and React best practices.
 
 ## Deployment
 
-The project is ready for deployment on:
-- Vercel
-- Netlify
-- GitHub Pages
-- Any static hosting service
+### GitHub Pages
 
-Build output is in the `dist/` directory after running `npm run build`.
+The project includes a configured `gh-pages` script for automated deployment.
+
+```bash
+# Builds the project and pushes 'dist' folder to 'gh-pages' branch
+npm run deploy
+```
+
+### Other Hosting (Vercel, Netlify, etc.)
+
+The project is ready for deployment on any static hosting service.
+
+```bash
+npm run build
+```
+
+The build output will be located in the `dist/` directory.
 
 ## Contributing
 
