@@ -38,21 +38,31 @@ export const DashboardView = ({ paxList, qList, onPaxClick }: { paxList: PaxData
           <Trophy className="text-yellow-400" size={24} />
           <h2 className="text-2xl font-black italic text-white uppercase">Hall of Fame</h2>
         </div>
-        <div className="space-y-4">
-          {paxList.slice(0, 5).map((p, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {paxList.slice(0, 20).map((p, i) => (
             <button
               key={p.name}
               onClick={() => onPaxClick(p)}
-              className="w-full flex items-center justify-between p-5 bg-black/40 rounded-2xl border border-zinc-800 hover:border-yellow-400/50 hover:bg-zinc-900/50 transition-all group"
+              className="w-full flex flex-col p-5 bg-black/40 rounded-2xl border border-zinc-800 hover:border-yellow-400/50 hover:bg-zinc-900/50 transition-all group text-left"
             >
-              <div className="flex items-center gap-4">
-                <span className="text-zinc-600 font-black italic text-xl w-8">0{i+1}</span>
-                <div className="text-left">
-                  <div className="font-bold text-white group-hover:text-yellow-400 transition-colors">{p.name}</div>
-                  <div className="text-xs text-zinc-500 font-bold uppercase tracking-widest">{p.posts > 50 ? 'Legend' : 'Warrior'}</div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-zinc-600 font-black italic text-lg w-6">{(i + 1).toString().padStart(2, '0')}</span>
+                  <div>
+                    <div className="font-bold text-white group-hover:text-yellow-400 transition-colors">{p.name}</div>
+                    <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">{p.posts >= 100 ? 'Legend' : p.posts >= 50 ? 'Commander' : 'Warrior'}</div>
+                  </div>
                 </div>
+                <span className="text-xl font-black text-yellow-400">{p.posts}</span>
               </div>
-              <span className="text-xl font-black text-yellow-400">{p.posts}</span>
+              
+              <div className="flex gap-2 mt-auto pt-2 border-t border-zinc-800/50">
+                {p.awards.length > 0 ? p.awards.map(a => (
+                  <span key={a} className="text-sm" title={a}>
+                    {a === 'Cindy' ? '🧱' : a === 'Mug' ? '☕' : '👕'}
+                  </span>
+                )) : <span className="text-[10px] text-zinc-700 font-bold uppercase italic">No Awards</span>}
+              </div>
             </button>
           ))}
         </div>
