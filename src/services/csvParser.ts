@@ -60,10 +60,12 @@ export const detectCSVType = (csvText: string): 'roster' | 'attendance' | 'posti
     const line = (lines[i] || '').toLowerCase().trim();
     if (!line) continue;
     
-    // Q Schedule: has Month, Day, Date, Time, Type, Q columns
-    if (line.includes('month') && line.includes('day') && line.includes('date') && 
+    // Q Schedule: has Date, Time, Type, Q columns (with or without Month/Day)
+    if ((line.includes('month') && line.includes('day') && line.includes('date') && 
         line.includes('time') && line.includes('type') && line.includes('q') &&
-        !line.includes('bd count')) {
+        !line.includes('bd count')) ||
+        (line.includes('date') && line.includes('time') && line.includes('type') && 
+        line.includes('q') && line.includes('notes') && !line.includes('bd') && !line.includes('year'))) {
       return 'qschedule';
     }
     
