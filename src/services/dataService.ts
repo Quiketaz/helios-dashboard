@@ -70,7 +70,7 @@ export const processRawCSV = (csvString: string): PaxData[] => {
     }
   });
 
-  return processedData;
+  return processedData.sort((a, b) => b.posts - a.posts);
 };
 
 export const fetchPaxRoster = async (): Promise<PaxData[]> => {
@@ -84,7 +84,7 @@ export const fetchPaxRoster = async (): Promise<PaxData[]> => {
   const text = await response.text();
   
   // Apply unified parsing and sort by posts
-  return processRawCSV(text).sort((a, b) => b.posts - a.posts);
+  return processRawCSV(text);
 };
 
 /**
@@ -103,7 +103,7 @@ export const fetchLocalCSV = async (filename: string): Promise<string> => {
  */
 export const loadLocalPaxData = async (filename: string): Promise<PaxData[]> => {
   const csvText = await fetchLocalCSV(filename);
-  return processRawCSV(csvText).sort((a, b) => b.posts - a.posts);
+  return processRawCSV(csvText);
 };
 
 /**

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Zap, Users, TrendingUp, MapPin, Trophy, Calendar, Star } from 'lucide-react';
 import type { PaxData, QRecord } from '../types';
 import { StatCard } from '../components/StatCard';
+import { AwardBadge } from '../components/AwardBadge';
 
 // Helper: Parse date string (M/D/YYYY format) to Date object
 const parseDate = (dateStr: string): Date => {
@@ -57,21 +58,9 @@ export const DashboardView = ({ paxList, qList, onPaxClick }: { paxList: PaxData
               </div>
               
               <div className="flex gap-2 mt-auto pt-2 border-t border-zinc-800/50">
-                {p.awards.length > 0 ? p.awards.map(a => {
-                  const isShirt = a.toLowerCase().startsWith('shirt');
-                  const shirtOrder = isShirt && a.includes(':') ? a.split(':')[1] : null;
-                  
-                  return (
-                    <span key={a} className="flex items-center gap-1 text-base" title={a}>
-                      {a.startsWith('Cindy') ? '🧱' : a.startsWith('Mug') ? '☕' : '👕'}
-                      {shirtOrder && (
-                        <span className="text-[10px] font-black text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded-md border border-yellow-500/30">
-                          #{shirtOrder}
-                        </span>
-                      )}
-                    </span>
-                  );
-                }) : <span className="text-[10px] text-zinc-700 font-bold uppercase italic">No Awards</span>}
+                {p.awards.length > 0 ? p.awards.map(a => (
+                  <AwardBadge key={a} award={a} />
+                )) : <span className="text-[10px] text-zinc-700 font-bold uppercase italic">No Awards</span>}
               </div>
             </button>
           ))}
