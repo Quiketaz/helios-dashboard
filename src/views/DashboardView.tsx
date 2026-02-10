@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Zap, Users, TrendingUp, MapPin, Trophy, Calendar, Star } from 'lucide-react';
+import { Zap, Users, MapPin, Trophy, Calendar, Star } from 'lucide-react';
 import type { PaxData, QRecord } from '../types';
 import { StatCard } from '../components/StatCard';
 import { AwardBadge } from '../components/AwardBadge';
@@ -27,10 +27,9 @@ export const DashboardView = ({ paxList, qList, onPaxClick }: { paxList: PaxData
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 pb-20 lg:pb-0">
     <div className="lg:col-span-8 space-y-10">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
         <StatCard title="Total Posts" value={paxList.reduce((a, b) => a + b.posts, 0).toLocaleString()} icon={<Zap size={20}/>} />
         <StatCard title="Total PAX" value={paxList.length.toString()} icon={<Users size={20}/>} />
-        <StatCard title="Avg Consistency" value={`${Math.round(paxList.reduce((acc, p) => acc + p.consistency, 0) / (paxList.length || 1))}%`} icon={<TrendingUp size={20}/>} />
         <StatCard title="Home AO" value="Helios" icon={<MapPin size={20}/>} />
       </div>
 
