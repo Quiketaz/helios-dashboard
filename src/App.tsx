@@ -9,6 +9,7 @@ import { RosterView } from './views/RosterView';
 import { ScheduleView } from './views/ScheduleView';
 import { IngestorView } from './views/IngestorView';
 import { ProfileView } from './views/ProfileView';
+import { AboutView } from './views/AboutView';
 import { Navigation } from './components/Navigation';
 
 const App = () => {
@@ -71,6 +72,7 @@ const App = () => {
           {activeTab === 'ROSTER' && <RosterView filteredPax={filteredPax} onPaxClick={setSelectedPax} />}
           {activeTab === 'SCHEDULE' && <ScheduleView qList={qList} loading={qLoading} error={qError} />}
           {activeTab === 'ADMIN' && <IngestorView />}
+          {(activeTab as string) === 'ABOUT' && <AboutView />}
         </main>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sword, Shield, Zap, Crown, Award, Calendar, MapPin, TrendingUp } from 'lucide-react';
+import { Sword, Shield, Zap, Crown, Award, Calendar, MapPin, TrendingUp, Instagram, Target } from 'lucide-react';
 import type { PaxData } from '../types';
 import { calculateRPGStats, getClassColor, getClassBgColor, getClassTextColor } from '../utils';
 
@@ -225,6 +225,43 @@ export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
             {stats.class === 'Warrior' &&
               "You're building your strength! Every post is a step forward. Keep pushing and watch your legend grow."}
           </p>
+        </div>
+
+        {/* The F3 Way & AO Info */}
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="md:col-span-2 bg-white/[0.03] border border-white/10 rounded-[2rem] p-6 md:p-10 backdrop-blur-xl">
+            <h3 className="text-xl font-black italic text-white uppercase mb-6 flex items-center gap-2">
+              <Target size={20} className="text-yellow-400" />
+              The F3 Mission
+            </h3>
+            <p className="text-zinc-300 text-sm leading-relaxed mb-6">
+              To plant, grow and serve small men’s workout groups for the <span className="text-white font-bold">invigoration of male leadership</span> in the community.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {['Free', 'All Men', 'Outdoors', 'Peer-led', 'Circle of Trust'].map((pillar) => (
+                <span key={pillar} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                  {pillar}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <a 
+            href="https://www.instagram.com/f3northkaty_helios/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group relative bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-white/10 rounded-[2rem] p-6 md:p-10 backdrop-blur-xl flex flex-col items-center justify-center text-center transition-all hover:border-pink-500/50"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-[2rem]" />
+            <Instagram size={40} className="text-pink-500 mb-4 group-hover:scale-110 transition-transform" />
+            <h3 className="text-lg font-black italic text-white uppercase tracking-tighter">
+              Follow Helios
+            </h3>
+            <p className="text-zinc-400 text-xs mt-1">@f3northkaty_helios</p>
+            <div className="mt-4 px-4 py-2 bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:bg-white/20 transition-colors">
+              View Gallery
+            </div>
+          </a>
         </div>
       </div>
     </div>
