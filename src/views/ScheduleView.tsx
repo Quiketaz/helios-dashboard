@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Calendar, Clock, User, AlertCircle, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { QRecord } from '../types';
-import { Logo } from '../components/Logo';
 
 interface ScheduleViewProps {
   qList: QRecord[];
@@ -73,12 +72,10 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
       {/* Header with Logo */}
       <div className="flex flex-col md:items-center justify-center pt-4 pb-2">
         <div className="flex items-center gap-3 mb-1 md:mb-2">
-          <Logo size="sm" />
           <h1 className="text-2xl md:text-4xl font-black text-white italic tracking-tighter uppercase">
-            F3 <span className="text-yellow-400">HELIOS</span>
+            <span className="text-yellow-400">Q Schedule & Events</span>
           </h1>
         </div>
-        <p className="text-zinc-500 font-bold uppercase tracking-widest text-[10px] md:text-xs">Q Schedule & Events</p>
       </div>
 
       {loading ? (

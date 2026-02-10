@@ -32,9 +32,15 @@ const App = () => {
       <Navigation activeTab={activeTab.toLowerCase()} onTabChange={(tab) => setActiveTab(tab.toUpperCase() as TabType)} />
 
       <div className="flex-1 overflow-y-auto lg:pl-20">
-        <header className="p-6 md:p-10 border-b border-zinc-900 flex justify-between items-center sticky top-0 bg-black/80 backdrop-blur-md z-30">
+        <header className="p-4 md:p-6 lg:p-10 border-b border-zinc-900 flex justify-between items-center sticky top-0 bg-black/80 backdrop-blur-md z-30">
           <div className="flex items-center gap-4">
-            <Logo size="sm" className="lg:hidden" />
+            <div className="flex items-center gap-3">
+              <Logo size="sm" />
+              <span className="text-lg md:text-2xl font-black text-white italic tracking-tighter uppercase whitespace-nowrap">
+                F3 <span className="text-yellow-400">HELIOS</span>
+              </span>
+            </div>
+            <div className="w-px h-8 bg-zinc-800 mx-2 hidden sm:block" />
             <h1 className="text-2xl md:text-4xl font-black italic text-white uppercase tracking-tighter">{activeTab}</h1>
           </div>
           <div className="relative w-64 hidden md:block">
