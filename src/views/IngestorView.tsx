@@ -202,7 +202,7 @@ export const IngestorView = () => {
       <div className="flex flex-col items-center justify-center py-20">
         <div className="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 w-full max-w-md shadow-2xl">
           <Lock className="text-yellow-400 mb-4 mx-auto" size={40} />
-          <h2 className="text-2xl font-black italic text-white text-center mb-6 uppercase tracking-tighter">Admin Access</h2>
+          <h2 className="text-2xl font-black italic text-white text-center mb-6 uppercase tracking-tighter">Nantan Access</h2>
           <form onSubmit={handleAuth} className="space-y-4">
             <input 
               type="password" 
@@ -221,7 +221,7 @@ export const IngestorView = () => {
   return (
     <div className="space-y-8">
       <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-[2rem] shadow-xl">
-        <h2 className="text-2xl font-black italic text-white mb-2 uppercase tracking-tighter">Data Ingestor</h2>
+        <h2 className="text-2xl font-black italic text-white mb-2 uppercase tracking-tighter">AO Operations</h2>
         <p className="text-zinc-500 text-sm mb-8 font-bold uppercase tracking-widest">🌐 Online • 📁 Local • 📤 Upload</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -233,7 +233,7 @@ export const IngestorView = () => {
           >
             <RefreshCw className={isProcessing ? 'animate-spin' : ''} size={20} /> 
             <div className="text-left">
-              <div>SYNC CLOUD</div>
+              <div>SYNC MOTHERSHIP</div>
               <div className="text-xs font-bold opacity-70">Google Sheets</div>
             </div>
           </button>
@@ -242,7 +242,7 @@ export const IngestorView = () => {
           <label className="flex items-center justify-center gap-3 p-6 border-2 border-dashed border-zinc-800 rounded-2xl cursor-pointer text-zinc-500 font-black hover:border-yellow-400/50 hover:text-yellow-400 transition-all">
             <Upload size={20} />
             <div className="text-left">
-              <div>UPLOAD CSV</div>
+              <div>UPLOAD WEINKE</div>
               <div className="text-xs font-bold opacity-70">Auto-detect type</div>
             </div>
             <input 
@@ -271,7 +271,7 @@ export const IngestorView = () => {
 
         {/* Local CSV Preset Files */}
         <div className="mt-8">
-          <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">📁 Load Local CSV Files</p>
+          <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">📁 Load Local Intel</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {localCSVFiles.map((file) => (
               <div key={file.name} className="flex flex-col items-stretch gap-2">
@@ -293,7 +293,7 @@ export const IngestorView = () => {
                     className="flex items-center justify-center gap-2 w-full p-2 bg-transparent border-2 border-dashed border-zinc-800 rounded-xl text-zinc-400 hover:border-yellow-400/50 hover:text-yellow-400 transition-all disabled:opacity-40 text-xs"
                   >
                     <RefreshCw size={14} />
-                    <span className="font-bold">SYNC CLOUD</span>
+                    <span className="font-bold">SYNC MOTHERSHIP</span>
                   </button>
                 </div>
               </div>
@@ -305,9 +305,9 @@ export const IngestorView = () => {
         <div className="mt-6 space-y-2 text-xs text-zinc-500 leading-relaxed">
           <p>💡 <strong>Load Options:</strong></p>
           <ul className="list-disc list-inside ml-2 space-y-1">
-            <li>🌐 <strong>Sync Cloud:</strong> Fetch postings/roster data from Google Sheets</li>
-            <li>📤 <strong>Upload CSV:</strong> Upload any CSV file (auto-detects format)</li>
-            <li>📁 <strong>Local Files:</strong> Quick-load preset CSVs from <code className="bg-black/50 px-2 py-1 rounded">public/data/</code></li>
+            <li>🌐 <strong>Sync Mothership:</strong> Fetch postings/roster data from Google Sheets</li>
+            <li>📤 <strong>Upload Weinke:</strong> Upload any CSV file (auto-detects format)</li>
+            <li>📁 <strong>Local Intel:</strong> Quick-load preset CSVs from <code className="bg-black/50 px-2 py-1 rounded">public/data/</code></li>
           </ul>
           <p className="mt-3"><strong>Supported Formats:</strong> Roster, Attendance, Postings, Q Schedule</p>
         </div>

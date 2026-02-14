@@ -78,7 +78,7 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
             F3 <span className="text-yellow-400">HELIOS</span>
           </h1>
         </div>
-        <p className="text-zinc-500 font-bold uppercase tracking-widest text-[10px] md:text-xs">Q Schedule & Events</p>
+        <p className="text-zinc-500 font-bold uppercase tracking-widest text-[10px] md:text-xs">The Weinke & Events</p>
       </div>
 
       {loading ? (
@@ -163,7 +163,7 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
                         <div>
                           <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
                             <User size={14} className="text-yellow-400" />
-                            <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Q Lead</span>
+                            <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">The Q</span>
                           </div>
                           <div className="text-2xl md:text-4xl font-black text-white group-hover:text-yellow-400 transition-colors">
                             {q.q || 'OPEN'}

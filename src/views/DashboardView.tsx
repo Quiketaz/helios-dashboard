@@ -23,20 +23,26 @@ export const DashboardView = ({ paxList, qList, onPaxClick }: { paxList: PaxData
       .sort((a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime())[0];
   }, [qList]);
 
+  const stats = useMemo(() => {
+    const totalPosts = paxList.reduce((a, b) => a + b.posts, 0);
+    const avgConsistency = Math.round(paxList.reduce((acc, p) => acc + p.consistency, 0) / (paxList.length || 1));
+    return { totalPosts, avgConsistency };
+  }, [paxList]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
     <div className="lg:col-span-8 space-y-10">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard title="Total Posts" value={paxList.reduce((a, b) => a + b.posts, 0).toLocaleString()} icon={<Zap size={20}/>} />
-        <StatCard title="Total PAX" value={paxList.length.toString()} icon={<Users size={20}/>} />
-        <StatCard title="Avg Consistency" value={`${Math.round(paxList.reduce((acc, p) => acc + p.consistency, 0) / (paxList.length || 1))}%`} icon={<TrendingUp size={20}/>} />
+        <StatCard title="Total Posts" value={stats.totalPosts.toLocaleString()} icon={<Zap size={20}/>} />
+        <StatCard title="Total Pax" value={paxList.length.toString()} icon={<Users size={20}/>} />
+        <StatCard title="Shield Lock %" value={`${stats.avgConsistency}%`} icon={<TrendingUp size={20}/>} />
         <StatCard title="Home AO" value="Helios" icon={<MapPin size={20}/>} />
       </div>
 
       <div className="bg-zinc-900/50 border border-zinc-800 rounded-[2.5rem] p-8">
         <div className="flex items-center gap-3 mb-8">
           <Trophy className="text-yellow-400" size={24} />
-          <h2 className="text-2xl font-black italic text-white uppercase">Hall of Fame</h2>
+          <h2 className="text-2xl font-black italic text-white uppercase">High Impact Men</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {paxList.slice(0, 20).map((p, i) => (

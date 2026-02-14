@@ -8,16 +8,16 @@ interface NavigationProps {
 
 export const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
   const navItems = [
-    { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
-    { id: 'roster', label: 'PAX', icon: Users },
-    { id: 'schedule', label: 'Schedule', icon: Calendar },
-    { id: 'admin', label: 'Admin', icon: Settings },
+    { id: 'DASHBOARD', label: 'The Gloom', icon: LayoutDashboard },
+    { id: 'ROSTER', label: 'The Pax', icon: Users },
+    { id: 'SCHEDULE', label: 'The Weinke', icon: Calendar },
+    { id: 'ADMIN', label: 'Nantan', icon: Settings },
   ];
 
   return (
     <>
       {/* Desktop Sidebar - Hidden on Mobile */}
-      <nav className="hidden lg:flex flex-col fixed left-0 top-0 h-screen w-20 bg-zinc-950 border-r border-zinc-900 py-8 items-center gap-8 z-50">
+      <nav className="hidden md:flex flex-col sticky top-0 h-screen w-20 bg-zinc-950 border-r border-zinc-900 py-8 items-center gap-8 z-50">
         <Logo size="sm" />
         <div className="flex flex-col gap-4">
           {navItems.map((item) => (
@@ -33,7 +33,7 @@ export const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
       </nav>
 
       {/* Mobile Bottom Nav - Hidden on Desktop */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-900 px-6 py-3 flex justify-between items-center z-50 pb-safe">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-900 px-6 py-3 flex justify-between items-center z-50 pb-safe">
         {navItems.map((item) => (
           <button
             key={item.id}

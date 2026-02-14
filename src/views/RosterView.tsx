@@ -6,11 +6,11 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
     <table className="w-full text-left border-collapse hidden md:table">
       <thead>
         <tr className="bg-zinc-900/50">
-          <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest">PAX Name</th>
+          <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest">Pax Name</th>
           <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest text-center">Posts</th>
-          <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest text-center">Consistency</th>
-          <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest">Last BD</th>
-          <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest">Awards</th>
+          <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest text-center">Shield Lock</th>
+          <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest">Last Post</th>
+          <th className="p-5 text-[10px] font-black uppercase text-zinc-500 tracking-widest">Achievements</th>
         </tr>
       </thead>
       <tbody className="divide-y divide-zinc-900">
@@ -63,7 +63,7 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
             </div>
             <div>
               <div className="font-bold text-white">{p.name}</div>
-              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Last: {p.lastBD}</div>
+              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Last Post: {p.lastBD}</div>
             </div>
           </div>
           <div className="text-right">
