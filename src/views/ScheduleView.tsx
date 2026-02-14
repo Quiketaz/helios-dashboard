@@ -102,11 +102,11 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
       ) : (
         <>
           {/* Week Navigation */}
-          <div className="flex items-center justify-between bg-zinc-900/80 border border-zinc-800 rounded-2xl p-3 md:p-4">
+          <div className="flex items-center justify-between bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-3 md:p-4 shadow-2xl">
             <button
               onClick={() => setWeekOffset(Math.max(weekOffset - 1, 0))}
               disabled={weekOffset === 0}
-              className="flex items-center gap-2 px-3 md:px-4 py-2 bg-yellow-400/10 border border-yellow-400/30 rounded-lg text-yellow-400 font-bold hover:bg-yellow-400/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-zinc-400 font-bold hover:text-yellow-400 hover:bg-yellow-400/10 hover:border-yellow-400/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all active:scale-95"
             >
               <ChevronLeft size={18} />
               <span className="hidden sm:inline">Previous</span>
@@ -119,7 +119,7 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
 
             <button
               onClick={() => setWeekOffset(weekOffset + 1)}
-              className="flex items-center gap-2 px-3 md:px-4 py-2 bg-yellow-400/10 border border-yellow-400/30 rounded-lg text-yellow-400 font-bold hover:bg-yellow-400/20 transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-zinc-400 font-bold hover:text-yellow-400 hover:bg-yellow-400/10 hover:border-yellow-400/30 transition-all active:scale-95"
             >
               <span className="hidden sm:inline">Next</span>
               <ChevronRight size={18} />
@@ -135,7 +135,7 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
               </div>
             </div>
           ) : (
-            <div className="grid gap-4">
+            <div className="grid gap-3">
               {weekEvents.map((q, idx) => {
                 const dateObj = parseDate(q.date);
                 const dayNum = dateObj.getDate();
@@ -144,43 +144,43 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
                 return (
                   <div
                     key={idx}
-                    className="relative bg-zinc-900 border border-zinc-800 rounded-3xl p-4 md:p-8 hover:border-yellow-400/50 transition-all group overflow-hidden"
+                    className="relative bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl p-3 md:p-5 hover:bg-white/[0.05] transition-all group overflow-hidden"
                   >
-                    <div className="absolute right-0 top-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
-                      <Calendar size={120} />
+                    <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity pointer-events-none -rotate-12">
+                      <Calendar size={100} />
                     </div>
 
-                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                    <div className="relative z-10 flex items-center gap-4 md:gap-8">
                       {/* Date Block */}
-                      <div className="flex-shrink-0 flex flex-col items-center justify-center bg-black/40 rounded-2xl p-3 md:p-4 w-full md:w-32 border border-zinc-800/50">
-                        <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest">{q.day}</span>
-                        <span className="text-4xl font-black text-white leading-none my-1">{dayNum}</span>
-                        <span className="text-sm font-bold text-yellow-400 uppercase">{monthShort}</span>
+                      <div className="flex-shrink-0 flex flex-col items-center justify-center bg-white/5 rounded-xl w-14 h-14 md:w-20 md:h-20 border border-white/10 shadow-inner">
+                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-tighter">{monthShort}</span>
+                        <span className="text-xl md:text-3xl font-black text-white leading-none my-0.5">{dayNum}</span>
+                        <span className="text-[10px] font-black text-yellow-400/80 uppercase">{q.day.substring(0, 3)}</span>
                       </div>
 
                       {/* Info Block */}
-                      <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-3">
+                      <div className="flex-1 flex flex-col items-start space-y-2">
                         <div>
                           <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
                             <User size={14} className="text-yellow-400" />
                             <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">The Q</span>
                           </div>
-                          <div className="text-2xl md:text-4xl font-black text-white group-hover:text-yellow-400 transition-colors">
+                          <div className="text-lg md:text-2xl font-black text-white group-hover:text-yellow-400 transition-colors tracking-tight">
                             {q.q || 'OPEN'}
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                          <div className="flex items-center gap-1.5 bg-zinc-800 px-3 py-1.5 rounded-lg">
-                            <Clock size={14} className="text-zinc-400" />
-                            <span className="text-sm font-bold text-zinc-200">{q.time || '05:30'}</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <div className="flex items-center gap-1 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">
+                            <Clock size={10} className="text-zinc-400" />
+                            <span className="text-[10px] font-bold text-zinc-300">{q.time || '05:30'}</span>
                           </div>
-                          <div className="flex items-center gap-1.5 bg-zinc-800 px-3 py-1.5 rounded-lg">
-                            <Zap size={14} className="text-yellow-400" />
-                            <span className="text-sm font-bold text-zinc-200">{q.type || 'Bootcamp'}</span>
+                          <div className="flex items-center gap-1 bg-yellow-400/10 border border-yellow-400/20 px-2 py-0.5 rounded-md">
+                            <Zap size={10} className="text-yellow-400" />
+                            <span className="text-[10px] font-bold text-yellow-400/90">{q.type || 'Bootcamp'}</span>
                           </div>
-                          {q.notes && (
-                            <span className="text-sm text-zinc-500 italic border-l border-zinc-700 pl-3">{q.notes}</span>
+                          {q.notes && q.notes !== 'Bootcamp' && (
+                            <span className="text-[10px] text-zinc-500 italic truncate max-w-[100px] md:max-w-none">{q.notes}</span>
                           )}
                         </div>
                       </div>
@@ -192,7 +192,7 @@ export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
           )}
 
           {/* Weekly Summary Footer */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 text-center">
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 text-center backdrop-blur-sm">
             <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest">
               {weekEvents.length} Workout{weekEvents.length !== 1 ? 's' : ''} This Week
             </p>

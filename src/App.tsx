@@ -9,6 +9,7 @@ import { RosterView } from './views/RosterView';
 import { ScheduleView } from './views/ScheduleView';
 import { IngestorView } from './views/IngestorView';
 import { ProfileView } from './views/ProfileView';
+import { AboutView } from './views/AboutView';
 import { Navigation } from './components/Navigation';
 
 const TAB_LABELS: Record<string, string> = {
@@ -16,6 +17,7 @@ const TAB_LABELS: Record<string, string> = {
   ROSTER: 'The Pax',
   SCHEDULE: 'The Weinke',
   ADMIN: 'Nantan Ops',
+  ABOUT: 'About',
 };
 
 const App = () => {
@@ -25,7 +27,19 @@ const App = () => {
   const { paxList, loading } = usePaxData();
   const { qList, loading: qLoading, error: qError } = useQData();
 
-  if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-yellow-400 font-black italic tracking-widest uppercase">SYNCING HELIOS...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-4">
+        <div className="relative">
+          <div className="absolute inset-0 blur-3xl bg-yellow-400/20 animate-pulse rounded-full" />
+          <Logo size="sm" />
+        </div>
+        <div className="text-yellow-400 font-black italic tracking-[0.3em] uppercase text-xs animate-pulse">
+          Syncing Helios
+        </div>
+      </div>
+    );
+  }
 
   // Show profile view if a PAX is selected
   if (selectedPax) {
@@ -54,6 +68,7 @@ const App = () => {
           {activeTab === 'ROSTER' && <RosterView filteredPax={filteredPax} onPaxClick={setSelectedPax} />}
           {activeTab === 'SCHEDULE' && <ScheduleView qList={qList} loading={qLoading} error={qError} />}
           {activeTab === 'ADMIN' && <IngestorView />}
+          {activeTab === 'ABOUT' && <AboutView />}
         </main>
       </div>
     </div>

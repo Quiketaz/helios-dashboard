@@ -23,8 +23,8 @@ export const useQData = () => {
         Papa.parse(text, {
           header: true,
           skipEmptyLines: true,
-          complete: (results) => {
-            results.data.forEach((row: any) => {
+          complete: (results: Papa.ParseResult<Record<string, string>>) => {
+            results.data.forEach((row) => {
               // Parse the CSV row - handle various column name possibilities
               const date = row['Date'] || row['date'] || '';
               const day = row['Day'] || row['day'] || '';

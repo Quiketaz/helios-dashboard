@@ -28,4 +28,4 @@ export interface RPGStats {
   experience: number;
 }
 
-export type TabType = 'DASHBOARD' | 'ROSTER' | 'SCHEDULE' | 'STATS' | 'ADMIN' | 'PROFILE';
+export type TabType = 'DASHBOARD' | 'ROSTER' | 'SCHEDULE' | 'STATS' | 'ADMIN' | 'PROFILE' | 'ABOUT';

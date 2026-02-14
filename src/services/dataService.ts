@@ -48,8 +48,8 @@ export const processRawCSV = (csvString: string): PaxData[] => {
 
       return lines.join('\n');
     },
-    complete: (results) => {
-      processedData = results.data.map((row: any) => {
+    complete: (results: Papa.ParseResult<Record<string, string>>) => {
+      processedData = results.data.map((row) => {
         const name = row['Name'];
         if (!name || name.trim() === "") return null;
         
@@ -63,14 +63,14 @@ export const processRawCSV = (csvString: string): PaxData[] => {
           awards: [
             row['Cindy'] === 'X' ? 'Cindy' : '',
             row['Mug'] === 'X' ? 'Mug' : '',
-            row['Shirt'] === 'X' || row['Shirt'] === '1' ? 'Shirt' : ''
+            row['Shirt'] && row['Shirt'] !== '' ? `Shirt:${row['Shirt']}` : ''
           ].filter(Boolean)
         };
       }).filter((p): p is PaxData => p !== null);
     }
   });
 
-  return processedData;
+  return processedData.sort((a, b) => b.posts - a.posts);
 };
 
 export const fetchPaxRoster = async (): Promise<PaxData[]> => {
@@ -84,7 +84,7 @@ export const fetchPaxRoster = async (): Promise<PaxData[]> => {
   const text = await response.text();
   
   // Apply unified parsing and sort by posts
-  return processRawCSV(text).sort((a, b) => b.posts - a.posts);
+  return processRawCSV(text);
 };
 
 /**
@@ -103,7 +103,7 @@ export const fetchLocalCSV = async (filename: string): Promise<string> => {
  */
 export const loadLocalPaxData = async (filename: string): Promise<PaxData[]> => {
   const csvText = await fetchLocalCSV(filename);
-  return processRawCSV(csvText).sort((a, b) => b.posts - a.posts);
+  return processRawCSV(csvText);
 };
 
 /**

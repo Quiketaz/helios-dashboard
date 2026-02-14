@@ -264,6 +264,12 @@ npm run lint
 
 Uses modern ESLint 9 with TypeScript support and React best practices.
 
+### Pre-commit Hooks
+
+The project uses **Husky** and **lint-staged** to ensure code quality. Every time you commit, ESLint will run on the staged files and automatically fix fixable issues.
+
+If the linting fails, the commit will be blocked until the issues are resolved.
+
 ## Browser Support
 
 - Chrome (latest)
