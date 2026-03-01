@@ -1,16 +1,17 @@
 # F3 Helios Dashboard
 
-A modern React + TypeScript + Vite dashboard for managing fitness community (F3) member data, attendance tracking, and community engagement metrics.
+A high-performance React 19 dashboard built with **Material Design 3** principles and **Tailwind CSS 4.1**. Designed for the F3 (Fitness, Friends, Faith) community to track participation, consistency, and community leadership through a gamified RPG lens.
 
 ## Overview
 
-The Helios Dashboard is designed for the F3 (Fitness, Friends, Faith) community to track member participation, consistency, and achievements. It provides real-time insights into attendee metrics, a searchable member roster, and administrative tools for data management.
+The Helios Dashboard transforms community attendance data into an interactive experience. It features a deep-gray dark mode interface optimized for high contrast (WCAG AAA) using the brand's signature yellow.
 
 ### Key Features
 
-- **📊 Dashboard View** - Real-time analytics showing total posts, member count, average consistency, and top performers
-- **👥 PAX Roster** - Searchable table with member details including posts, consistency %, last workout date, and awards
-- **🎮 RPG Profile System** - Gamified character sheets with RPG classes, stats, and progression tracking
+- **📊 Command Center** - Real-time analytics featuring an "Operator Identity" hero card and live weather integration via Open-Meteo.
+- **👥 PAX Roster** - Searchable member database with M3-compliant tonal badges and paginated data views.
+- **🎮 RPG Profile System** - Gamified character sheets featuring SVG radial attribute rings, XP progression, and achievement milestones.
+- **📜 Mission Timeline** - A vertical workout history log showing AO locations, workout types, and "Q Lead" (leadership) status.
 - **📅 Q Schedule** - Upcoming workouts with Q leads, times, and locations
 - **🔐 Admin Portal** - Multi-format CSV data ingestion (roster, attendance history, Q analytics)
 - **🌐 Dual Data Sources** - Online Google Sheets sync + local CSV files for training/offline access
@@ -25,7 +26,7 @@ The Helios Dashboard is designed for the F3 (Fitness, Friends, Faith) community 
 | **React** | 19.2 | UI Framework |
 | **TypeScript** | 5.9 | Type-safe development |
 | **Vite** | 7.2 | Build tool & dev server |
-| **Tailwind CSS** | 4.1 | Styling |
+| **Tailwind CSS** | 4.1 | Atomic CSS with M3 Tonal Palettes |
 | **Lucide React** | 0.563 | Icon library |
 | **PapaParse** | 5.5 | CSV parsing |
 | **ESLint** | 9.39 | Code linting |

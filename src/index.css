@@ -1,13 +1,40 @@
+/* src/index.css */
 @import "tailwindcss";
 
-/* Custom Global Reset */
-:root {
-  color-scheme: dark;
+@theme {
+  /* 
+    Material Design 3 Tonal Palette: Primary (Brand Yellow #FFD700)
+    Mapped for Dark Mode (Tone 80 as Primary)
+  */
+  --color-primary: #FFD700;               /* Primary 80 */
+  --color-on-primary: #3A3000;            /* Primary 20 - Deep contrast for yellow */
+  --color-primary-container: #544600;     /* Primary 30 */
+  --color-on-primary-container: #FFE15F;  /* Primary 90 */
+
+  /* 
+    Material Design 3 Tonal Palette: Neutral (Deep Grays)
+    Surface levels for Dark Mode 
+  */
+  --color-surface: #141311;               /* Neutral 6 - Deepest Surface */
+  --color-on-surface: #E6E2DE;            /* Neutral 90 */
+  --color-surface-variant: #4D4639;       /* Neutral Variant 30 */
+  --color-on-surface-variant: #D0C5B4;    /* Neutral Variant 80 */
+
+  /* Surface Containers (MD3 Elevation levels) */
+  --color-surface-container-lowest: #0F0E0D; /* Neutral 4 */
+  --color-surface-container-low: #1C1B19;    /* Neutral 10 */
+  --color-surface-container: #211F1D;        /* Neutral 12 */
+  --color-surface-container-high: #2B2A27;   /* Neutral 17 */
+  --color-surface-container-highest: #363431;/* Neutral 22 */
+
+  /* Outline and Accents */
+  --color-outline: #999080;
+  --color-outline-variant: #4D4639;
 }
 
-body {
-  margin: 0;
-  background-color: black;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  body {
+    /* Enforce MD3 Dark Mode defaults */
+    @apply bg-surface text-on-surface antialiased;
+  }
 }
