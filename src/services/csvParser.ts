@@ -93,33 +93,29 @@ export const detectCSVType = (csvText: string): 'roster' | 'attendance' | 'posti
  * Parse Attendance CSV format
  */
 export const parseAttendanceCSV = (csvText: string): AttendanceRecord[] => {
-  const records: AttendanceRecord[] = [];
-  
-  Papa.parse(csvText, {
+  const results = Papa.parse(csvText, {
     header: true,
     skipEmptyLines: true,
-    complete: (results: Papa.ParseResult<Record<string, string>>) => {
-      results.data.forEach((row) => {
-        const date = row['Date'];
-        const name = row['Name'];
-        
-        if (date && name && date.trim() && name.trim()) {
-          records.push({
-            date: date.trim(),
-            name: name.trim(),
-            bdCount: parseInt(row['BD Count'] || row['BD Count '] || '0') || 0,
-            ddCount: parseInt(row['DD Count'] || '0') || 0,
-            qLead: row['BD'] || row['Q'] || undefined,
-            isQ: (row['Pax Comment'] || '').includes('Q') || row['BD'] === '1',
-            location: row['Location Comment'] || row['Home AO or Visitor'] || 'TBD',
-            type: row['BD Type'] || 'Standard',
-          });
-        }
-      });
-    },
   });
-  
-  return records;
+
+  return (results.data as any[]).map((row) => {
+    const date = row['Date'];
+    const name = row['Name'];
+    
+    if (date && name && date.trim() && name.trim()) {
+      return {
+        date: date.trim(),
+        name: name.trim(),
+        bdCount: parseInt(row['BD Count'] || row['BD Count '] || '0') || 0,
+        ddCount: parseInt(row['DD Count'] || '0') || 0,
+        qLead: row['BD'] || row['Q'] || undefined,
+        isQ: (row['Pax Comment'] || '').includes('Q') || row['BD'] === '1',
+        location: row['Location Comment'] || row['Home AO or Visitor'] || 'TBD',
+        type: row['BD Type'] || 'Standard',
+      };
+    }
+    return null;
+  }).filter(Boolean) as AttendanceRecord[];
 };
 
 interface GroupedPosting {
