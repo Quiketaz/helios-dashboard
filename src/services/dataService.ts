@@ -7,9 +7,7 @@ import { parseAttendanceCSV, parsePostingsCSV, parseQScheduleCSV } from './csvPa
  * and the App (for displaying live data).
  */
 export const processRawCSV = (csvString: string): PaxData[] => {
-  let processedData: PaxData[] = [];
-  
-  Papa.parse(csvString, {
+  const results = Papa.parse(csvString, {
     header: true,
     skipEmptyLines: true,
     beforeFirstChunk: (chunk) => {
@@ -48,29 +46,27 @@ export const processRawCSV = (csvString: string): PaxData[] => {
 
       return lines.join('\n');
     },
-    complete: (results: Papa.ParseResult<Record<string, string>>) => {
-      processedData = results.data.map((row) => {
-        const name = row['Name'];
-        if (!name || name.trim() === "") return null;
-        
-        return {
-          name: name.trim(),
-          posts: parseInt(row['BD Count '] || row['BD Count']) || 0,
-          consistency: parseInt(row['Consistency']?.replace('%', '')) || 0,
-          firstBD: row['First BD'] || 'N/A',
-          lastBD: row['Last BD'] || 'N/A',
-          homeAo: row['Home AO or Visitor'] || 'Helios',
-          awards: [
-            row['Cindy'] === 'X' ? 'Cindy' : '',
-            row['Mug'] === 'X' ? 'Mug' : '',
-            row['Shirt'] && row['Shirt'] !== '' ? `Shirt:${row['Shirt']}` : ''
-          ].filter(Boolean)
-        };
-      }).filter((p): p is PaxData => p !== null);
-    }
   });
 
-  return processedData.sort((a, b) => b.posts - a.posts);
+  return (results.data as any[]).map((row) => {
+    const name = row['Name'];
+    if (!name || name.trim() === "") return null;
+    
+    return {
+      name: name.trim(),
+      posts: parseInt(row['BD Count '] || row['BD Count']) || 0,
+      consistency: parseInt(row['Consistency']?.replace('%', '')) || 0,
+      firstBD: row['First BD'] || 'N/A',
+      lastBD: row['Last BD'] || 'N/A',
+      homeAo: row['Home AO or Visitor'] || 'Helios',
+      awards: [
+        row['Shirt'] && row['Shirt'] !== '' ? `Shirt:${row['Shirt']}` : '',
+        row['Mug'] === 'X' ? 'Mug' : '',
+        row['Cindy'] === 'X' ? 'Cindy' : ''
+      ].filter(Boolean)
+    };
+  }).filter((p): p is PaxData => p !== null)
+    .sort((a, b) => b.posts - a.posts);
 };
 
 export const fetchPaxRoster = async (): Promise<PaxData[]> => {

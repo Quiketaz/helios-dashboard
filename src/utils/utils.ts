@@ -1,7 +1,6 @@
-import type { RPGStats, RPGClass, PaxData } from './types';
+import type { RPGStats, RPGClass, PaxData } from '../types';
 
 export const calculateLevel = (posts: number): number => Math.floor(posts / 15) + 1;
-export const getXPProgress = (posts: number): number => ((posts % 15) / 15) * 100;
 
 /**
  * Determines RPG class based on consistency percentage
@@ -22,19 +21,17 @@ export const determineRPGClass = (consistency: number): RPGClass => {
  */
 export const calculateRPGStats = (pax: PaxData): RPGStats => {
   const level = calculateLevel(pax.posts);
-  const stamina = Math.min(100, (pax.posts / 250) * 100); // Normalize to 0-100 based on typical max posts
-  const agility = pax.consistency; // Consistency is directly Agility
-  const leadership = Math.min(100, (level / 10) * 100); // Derived from level progression
-  const experience = (pax.posts % 15) * 100; // XP within current level
+  const fitness = Math.min(100, (pax.posts / 250) * 100); 
+  const fellowship = pax.consistency; 
+  const impact = Math.min(100, (level / 10) * 100); 
   const rpgClass = determineRPGClass(pax.consistency);
 
   return {
     class: rpgClass,
     level,
-    stamina: Math.round(stamina),
-    leadership: Math.round(leadership),
-    agility: Math.round(agility),
-    experience: Math.round(experience),
+    fitness: Math.round(fitness),
+    fellowship: Math.round(fellowship),
+    impact: Math.round(impact),
   };
 };
 

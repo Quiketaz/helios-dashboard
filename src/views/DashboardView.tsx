@@ -1,56 +1,115 @@
-import { useMemo } from 'react';
-import { Zap, Users, Trophy, TrendingUp, MapPin } from 'lucide-react';
-import type { PaxData, QRecord } from '../types';
-import { StatCard } from '../components/StatCard';
-import { AwardBadge } from '../components/AwardBadge';
+import { useMemo, useState } from 'react';
+import { Calendar, Target, Instagram, User } from 'lucide-react';
+import { Logo } from '../components/Logo';
+import { PaxSpotlight } from '../components/OperatorCard';
+import { WeatherCard } from '../components/WeatherCard';
+import { HallOfFame } from '../components/HallOfFame';
+import { useData } from '../context/DataContext';
+//import type { parseDate } from './utils/dateUtils';
+import { parseDate } from '../utils/dateUtils';
 
-export const DashboardView = ({ paxList, onPaxClick }: { paxList: PaxData[], qList: QRecord[], onPaxClick: (pax: PaxData) => void }) => {
-  const stats = useMemo(() => {
-    const totalPosts = paxList.reduce((a, b) => a + b.posts, 0);
-    const avgConsistency = Math.round(paxList.reduce((acc, p) => acc + p.consistency, 0) / (paxList.length || 1));
-    return { totalPosts, avgConsistency };
+
+export const DashboardView = () => {
+  const { paxList, qList, setSelectedPax } = useData();
+  const [isWeatherExpanded, setIsWeatherExpanded] = useState(false);
+
+  const nextQ = useMemo(() => {
+    if (!qList || qList.length === 0) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of today
+
+    return [...qList]
+      .filter(q => {
+        try { return parseDate(q.date) > today; }
+        catch { return false; }
+      })
+      .sort((a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime())[0];
+  }, [qList]);
+
+  const spotlightPax = useMemo(() => {
+    const eligible = paxList.filter(p => p.posts > 50);
+    if (eligible.length === 0) return null;
+    return eligible[Math.floor(Math.random() * eligible.length)];
   }, [paxList]);
 
   return (
-    <div className="flex flex-col gap-10">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard title="Total Posts" value={stats.totalPosts.toLocaleString()} icon={<Zap size={20}/>} />
-        <StatCard title="Total Pax" value={paxList.length.toString()} icon={<Users size={20}/>} />
-        <StatCard title="Shield Lock %" value={`${stats.avgConsistency}%`} icon={<TrendingUp size={20}/>} />
-        <StatCard title="Home AO" value="Helios" icon={<MapPin size={20}/>} />
+    <div className="space-y-10 pb-20 lg:pb-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="lg:col-span-2">
+          <PaxSpotlight pax={spotlightPax} />
+        </div>
+        <div className="lg:col-span-2 rounded-3xl bg-surface-container-high p-5 shadow-md border border-outline-variant/10 relative overflow-hidden flex items-center justify-between gap-4">
+          {/* Watermark Logo */}
+          <div className="pointer-events-none absolute -bottom-4 -right-4 opacity-[0.03]">
+            <Logo size="lg" />
+          </div>
+
+          {/* Left: Mission Info */}
+          <div className="relative z-10 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Calendar size={14} className="text-primary" />
+              <p className="text-[9px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">Next Beatdown</p>
+            </div>
+            <div className={`transition-all duration-500 ${isWeatherExpanded ? 'opacity-0 -translate-x-2 blur-sm' : 'opacity-100 translate-x-0 blur-0'}`}>
+              <h2 className="text-2xl font-black text-primary uppercase tracking-tighter leading-none">
+                {nextQ ? nextQ.date : 'TBD'}
+              </h2>
+              <div className="mt-1 inline-flex px-2 py-0.5 rounded-full border border-primary/20 bg-primary/5 font-bold text-[9px] uppercase tracking-widest text-primary">
+                {nextQ ? (nextQ.type || 'Bootcamp') : 'Scheduled'}
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Q Lead & Weather */}
+          <div className="relative z-10 flex flex-col items-end gap-2">
+            <div className={`transition-all duration-500 ${isWeatherExpanded ? 'opacity-0 translate-x-2 blur-sm' : 'opacity-100 translate-x-0 blur-0'}`}>
+              <div className="flex items-center gap-1.5 bg-surface-container-highest px-2 py-1 rounded-lg border border-outline-variant/10">
+                <User size={12} className="text-primary" />
+                <span className="text-[11px] font-bold text-on-surface">{nextQ ? (nextQ.q || 'OPEN') : 'TBD'}</span>
+              </div>
+            </div>
+            <WeatherCard isExpanded={isWeatherExpanded} onToggle={setIsWeatherExpanded} />
+          </div>
+        </div>
       </div>
 
-      <div className="bg-zinc-900/50 border border-zinc-800 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 shadow-inner">
-        <div className="flex items-center gap-3 mb-8">
-          <Trophy className="text-yellow-400" size={24} />
-          <h2 className="text-2xl font-black italic text-white uppercase">High Impact Men</h2>
+      <HallOfFame paxList={paxList} onPaxClick={setSelectedPax} />
+
+      {/* The F3 Way & AO Info */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 bg-surface-container border border-outline-variant/20 rounded-[2.5rem] p-6 md:p-10 shadow-sm">
+          <h3 className="text-xl font-black italic text-on-surface uppercase mb-6 flex items-center gap-2">
+            <Target size={20} className="text-primary" />
+            The F3 Mission
+          </h3>
+          <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
+            To plant, grow and serve small men’s workout groups for the <span className="text-on-surface font-bold">invigoration of male leadership</span> in the community.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {['Free', 'All Men', 'Outdoors', 'Peer-led', 'Circle of Trust'].map((pillar) => (
+              <span key={pillar} className="px-3 py-1 bg-surface-container-highest border border-outline-variant/10 rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                {pillar}
+              </span>
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-          {paxList.slice(0, 20).map((p, i) => (
-            <button
-              key={p.name}
-              onClick={() => onPaxClick(p)}
-              className="w-full flex flex-col p-3 md:p-5 bg-zinc-950/50 rounded-2xl border border-zinc-800/50 hover:border-yellow-400/50 hover:bg-zinc-900/50 transition-all active:scale-[0.98] group text-left shadow-lg"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-zinc-700 font-black italic text-base md:text-lg w-5 md:w-6">{(i + 1).toString().padStart(2, '0')}</span>
-                  <div>
-                    <div className="text-sm md:text-base font-bold text-white group-hover:text-yellow-400 transition-colors">{p.name}</div>
-                    <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">{p.posts >= 100 ? 'Legend' : p.posts >= 50 ? 'Commander' : 'Warrior'}</div>
-                  </div>
-                </div>
-                <span className="text-lg md:text-xl font-black text-yellow-400">{p.posts}</span>
-              </div>
-              
-              <div className="flex gap-2 mt-auto pt-2 border-t border-zinc-800/50">
-                {p.awards.length > 0 ? p.awards.map(a => (
-                  <AwardBadge key={a} award={a} />
-                )) : <span className="text-[10px] text-zinc-700 font-bold uppercase italic">No Awards</span>}
-              </div>
-            </button>
-          ))}
-        </div>
+
+        <a 
+          href="https://www.instagram.com/f3northkaty_helios/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="group relative bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-outline-variant/20 rounded-[2.5rem] p-6 md:p-10 flex flex-col items-center justify-center text-center transition-all hover:border-pink-500/50 shadow-sm overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-[2.5rem]" />
+          <Instagram size={40} className="text-pink-500 mb-4 group-hover:scale-110 transition-transform" />
+          <h3 className="text-lg font-black italic text-on-surface uppercase tracking-tighter">
+            Follow Helios
+          </h3>
+          <p className="text-on-surface-variant text-xs mt-1">@f3northkaty_helios</p>
+          <div className="mt-4 px-4 py-2 bg-surface-container-highest/50 rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:bg-surface-container-highest transition-colors text-on-surface">
+            View Gallery
+          </div>
+        </a>
       </div>
     </div>
   );

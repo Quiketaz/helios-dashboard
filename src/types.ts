@@ -22,10 +22,9 @@ export type RPGClass = 'Warrior' | 'Commander' | 'Guardian' | 'Legend';
 export interface RPGStats {
   class: RPGClass;
   level: number;
-  stamina: number;
-  leadership: number;
-  agility: number;
-  experience: number;
+  fitness: number;
+  fellowship: number;
+  impact: number;
 }
 
 export type TabType = 'DASHBOARD' | 'ROSTER' | 'SCHEDULE' | 'STATS' | 'ADMIN' | 'PROFILE' | 'ABOUT';
