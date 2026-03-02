@@ -68,7 +68,7 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
               ${sortMode === 'fng' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
             `}
           >
-            <Calendar size={16} /> Filter FNGS
+            <Calendar size={16} /> FNGS
           </button>
           <button 
             onClick={() => setSortMode('posts')}

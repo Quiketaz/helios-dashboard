@@ -20,16 +20,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ title, onTabChange }) => {
 
         {/* Desktop View: Page Title */}
         <div className="hidden md:flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-on-primary shadow-lg">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="h-6 w-6"
-            >
-              <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z" />
-            </svg>
-          </div>
+          <Logo size="sm" />
           <h1 className="text-xl font-semibold tracking-tight text-on-surface">
             {title || 'Helios'}
           </h1>
