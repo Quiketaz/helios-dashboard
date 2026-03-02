@@ -34,11 +34,11 @@ export const DashboardView = () => {
 
   return (
     <div className="space-y-10 pb-20 lg:pb-0">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div className="hidden md:block lg:col-span-2">
           <PaxSpotlight pax={spotlightPax} />
         </div>
-        <div className="lg:col-span-2 rounded-3xl bg-surface-container-high p-5 shadow-md border border-outline-variant/10 relative overflow-hidden flex items-center justify-between gap-4">
+        <div className="lg:col-span-2 h-full rounded-3xl bg-surface-container-high p-5 shadow-md border border-outline-variant/10 relative overflow-hidden flex items-center justify-between gap-4">
           {/* Watermark Logo */}
           <div className="pointer-events-none absolute -bottom-4 -right-4 opacity-[0.03]">
             <Logo size="lg" />

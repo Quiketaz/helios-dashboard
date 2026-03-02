@@ -22,10 +22,10 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
     if (sortMode === 'consistency') {
       sorted.sort((a, b) => b.consistency - a.consistency);
     } else if (sortMode === 'fng') {
+      // Filter out invalid dates
+      sorted = sorted.filter(p => p.firstBD && p.firstBD !== 'N/A');
       // Sort by First BD descending (Newest first)
       sorted.sort((a, b) => {
-        if (a.firstBD === 'N/A') return 1;
-        if (b.firstBD === 'N/A') return -1;
         try {
           return parseDate(b.firstBD).getTime() - parseDate(a.firstBD).getTime();
         } catch {
@@ -46,12 +46,12 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
         {/* Sort Controls */}
         <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
           <button 
-            onClick={() => setSortMode('posts')}
+            onClick={() => setSortMode('fng')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all whitespace-nowrap
-              ${sortMode === 'posts' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
+              ${sortMode === 'fng' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
             `}
           >
-            <Zap size={16} /> Top Posts
+            <Calendar size={16} /> FNGs
           </button>
           <button 
             onClick={() => setSortMode('consistency')}
@@ -62,12 +62,12 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
             <TrendingUp size={16} /> Consistency
           </button>
           <button 
-            onClick={() => setSortMode('fng')}
+            onClick={() => setSortMode('posts')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all whitespace-nowrap
-              ${sortMode === 'fng' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
+              ${sortMode === 'posts' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
             `}
           >
-            <Calendar size={16} /> FNGs
+            <Zap size={16} /> Top Posts
           </button>
         </div>
       </div>
