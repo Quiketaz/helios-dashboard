@@ -1,4 +1,7 @@
 import Papa from 'papaparse';
+import type { AttendanceRecord } from '../types';
+
+export type { AttendanceRecord };
 
 /**
  * Validation result for parsed data
@@ -9,6 +12,7 @@ export interface ValidationResult {
   issues: Array<{ row: number; field: string; issue: string }>;
   missingHeaders: string[];
   isDuplicate: boolean;
+  fngCount: number;
 }
 
 /**
@@ -20,20 +24,6 @@ export interface QPostingAnalytics {
   recentQs: string[];
   lastQ: string;
   consistency: number;
-}
-
-/**
- * Attendance record from Attendance sheet
- */
-export interface AttendanceRecord {
-  date: string;
-  name: string;
-  bdCount: number;
-  ddCount: number;
-  qLead?: string;
-  isQ: boolean;
-  location: string;
-  type: string;
 }
 
 /**
@@ -74,8 +64,8 @@ export const detectCSVType = (csvText: string): 'roster' | 'attendance' | 'posti
       return 'roster';
     }
     
-    // Attendance: has Year, Month, Name, BD
-    if (line.includes('year') && line.includes('name') && line.includes('bd') &&
+    // Attendance: has Date, Name, BD
+    if (line.includes('date') && line.includes('name') && line.includes('bd') &&
         !line.includes('consistency')) {
       return 'attendance';
     }
@@ -101,6 +91,8 @@ export const parseAttendanceCSV = (csvText: string): AttendanceRecord[] => {
   return (results.data as any[]).map((row) => {
     const date = row['Date'];
     const name = row['Name'];
+    // Robustly handle variations in the comment column name
+    const comment = (row['Pax Comment'] || row['Pax Comment '] || row['Comment'] || '').toUpperCase();
     
     if (date && name && date.trim() && name.trim()) {
       return {
@@ -109,7 +101,13 @@ export const parseAttendanceCSV = (csvText: string): AttendanceRecord[] => {
         bdCount: parseInt(row['BD Count'] || row['BD Count '] || '0') || 0,
         ddCount: parseInt(row['DD Count'] || '0') || 0,
         qLead: row['BD'] || row['Q'] || undefined,
-        isQ: (row['Pax Comment'] || '').includes('Q') || row['BD'] === '1',
+        isQ: comment.includes('Q') || row['BD'] === '1',
+        isVQ: comment.includes('VQ'),
+        isFNG: comment.includes('FNG'),
+        isPP: comment.includes('PP'),
+        isBB: comment.includes('BB'),
+        isStarsky: comment.includes('STARSKY'),
+        isSecondHelping: comment.includes('2ND HELPING'),
         location: row['Location Comment'] || row['Home AO or Visitor'] || 'TBD',
         type: row['BD Type'] || 'Standard',
       };
@@ -246,6 +244,7 @@ export const validateAttendanceCSV = (csvText: string): ValidationResult => {
     issues: [],
     missingHeaders: [],
     isDuplicate: false,
+    fngCount: 0,
   };
 
   const requiredHeaders = ['Date', 'Name', 'BD'];
@@ -279,10 +278,15 @@ export const validateAttendanceCSV = (csvText: string): ValidationResult => {
       results.data.forEach((row, idx) => {
         const date = row['Date'];
         const name = row['Name'];
+        const comment = (row['Pax Comment'] || row['Pax Comment '] || row['Comment'] || '').toUpperCase();
         let rowHasIssue = false;
 
         if (date && name && date.trim() && name.trim()) {
           result.rowsProcessed++;
+          
+          if (comment.includes('FNG')) {
+            result.fngCount++;
+          }
         }
 
         if (!date || !date.trim()) {
@@ -318,6 +322,7 @@ export const validatePostingsCSV = (csvText: string): ValidationResult => {
     issues: [],
     missingHeaders: [],
     isDuplicate: false,
+    fngCount: 0,
   };
 
   let headerRow: string[] = [];
@@ -368,6 +373,7 @@ export const validateQScheduleCSV = (csvText: string): ValidationResult => {
     issues: [],
     missingHeaders: [],
     isDuplicate: false,
+    fngCount: 0,
   };
 
   const requiredHeaders = ['Date', 'Time', 'Type'];

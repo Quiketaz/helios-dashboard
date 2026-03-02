@@ -12,7 +12,7 @@ export const PaxSpotlight: React.FC<{ pax: PaxData | null }> = ({ pax }) => {
   const classText = getClassTextColor(rank);
 
   return (
-    <div className="relative h-full overflow-hidden rounded-3xl bg-surface-container-high p-5 shadow-md transition-all hover:shadow-lg border border-outline-variant/10 flex items-center justify-between gap-4">
+    <div className="relative h-full overflow-hidden rounded-3xl bg-surface-container-high p-5 shadow-md transition-all hover:shadow-lg flex items-center justify-between gap-4">
       {/* Watermark Logo - Tucked into the corner */}
       <div className="pointer-events-none absolute -bottom-4 -right-4 opacity-[0.03]">
         <Logo size="lg" />

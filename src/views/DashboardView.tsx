@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Calendar, Target, Instagram, User } from 'lucide-react';
+import { Calendar, Target, Instagram, User, Trophy } from 'lucide-react';
 import { Logo } from '../components/Logo';
 import { PaxSpotlight } from '../components/OperatorCard';
 import { WeatherCard } from '../components/WeatherCard';
@@ -38,7 +38,7 @@ export const DashboardView = () => {
         <div className="hidden md:block lg:col-span-2">
           <PaxSpotlight pax={spotlightPax} />
         </div>
-        <div className="lg:col-span-2 h-full rounded-3xl bg-surface-container-high p-5 shadow-md border border-outline-variant/10 relative overflow-hidden flex items-center justify-between gap-4">
+        <div className="lg:col-span-2 h-full rounded-3xl bg-surface-container-high p-5 shadow-md relative overflow-hidden flex items-center justify-between gap-4">
           {/* Watermark Logo */}
           <div className="pointer-events-none absolute -bottom-4 -right-4 opacity-[0.03]">
             <Logo size="lg" />
@@ -73,11 +73,19 @@ export const DashboardView = () => {
         </div>
       </div>
 
-      <HallOfFame paxList={filteredPax} onPaxClick={setSelectedPax} />
+      <div className="space-y-4">
+        <div className="px-2">
+          <h2 className="text-xl font-black italic text-on-surface uppercase tracking-tight flex items-center gap-2">
+            <Trophy size={20} className="text-primary" />
+            Hall of Fame
+          </h2>
+        </div>
+        <HallOfFame paxList={filteredPax} onPaxClick={setSelectedPax} />
+      </div>
 
       {/* The F3 Way & AO Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 bg-surface-container border border-outline-variant/20 rounded-3xl p-5 shadow-sm flex flex-col justify-center">
+        <div className="md:col-span-2 bg-surface-container rounded-3xl p-5 shadow-sm flex flex-col justify-center">
           <div className="flex items-center gap-2 mb-3">
             <Target size={18} className="text-primary" />
             <h3 className="text-lg font-black italic text-on-surface uppercase tracking-tight">The F3 Mission</h3>
@@ -98,7 +106,7 @@ export const DashboardView = () => {
           href="https://www.instagram.com/f3northkaty_helios/" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="group relative bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-outline-variant/20 rounded-3xl p-5 flex flex-col items-center justify-center text-center transition-all hover:border-pink-500/50 shadow-sm overflow-hidden"
+          className="group relative bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-3xl p-5 flex flex-col items-center justify-center text-center transition-all hover:ring-2 hover:ring-pink-500/50 shadow-sm overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
           <Instagram size={40} className="text-pink-500 mb-4 group-hover:scale-110 transition-transform" />

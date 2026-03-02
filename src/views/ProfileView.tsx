@@ -28,12 +28,17 @@ export const ProfileView = () => {
 
   // Filter attendance to only show significant milestones
   const milestones = useMemo(() => {
-    return [
+    const m = [
       { label: 'Latest Mission', date: pax.lastBD },
-      { label: 'Initial Deployment', date: pax.firstBD }
     ];
-  }, [pax.firstBD, pax.lastBD]);
 
+    if (pax.vqDate) {
+      m.push({ label: 'First Q (VQ)', date: pax.vqDate });
+    }
+
+    m.push({ label: 'Initial Deployment', date: pax.firstBD });
+    return m;
+    }, [pax.firstBD, pax.lastBD, pax.vqDate]);
   return (
     <div className="min-h-screen bg-surface pb-20 selection:bg-primary/30">
       {/* Header with Back Button */}
@@ -91,6 +96,28 @@ export const ProfileView = () => {
               max={100}
               icon={Shield}
             />
+          </div>
+        </div>
+
+        {/* Specialty Missions */}
+        <div className="bg-surface-container border border-outline-variant/20 rounded-3xl md:rounded-[2.5rem] p-5 md:p-10 shadow-sm">
+          <h3 className="text-xl font-black italic text-primary uppercase mb-6 flex items-center gap-2">
+            <History size={18} />
+            Specialty Missions
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { label: 'Proud Papa', count: pax.ppCount, icon: '☕' },
+              { label: 'Big Brother', count: pax.bbCount, icon: '📦' },
+              { label: 'Starsky', count: pax.starskyCount, icon: '⭐' },
+              { label: '2nd Helping', count: pax.secondHelpingCount, icon: '🍽️' },
+            ].map((item) => (
+              <div key={item.label} className="bg-surface-container-low border border-outline-variant/10 rounded-2xl p-4 text-center group hover:border-primary/30 transition-colors">
+                <div className="text-2xl mb-1 group-hover:scale-110 transition-transform">{item.icon}</div>
+                <div className="text-2xl font-black text-on-surface">{item.count || 0}</div>
+                <div className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">{item.label}</div>
+              </div>
+            ))}
           </div>
         </div>
 

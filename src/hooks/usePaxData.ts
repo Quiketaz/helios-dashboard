@@ -22,7 +22,15 @@ export const usePaxData = () => {
           return {
             ...pax,
             attendance: paxAttendance,
-            qCount: paxAttendance.filter(a => a.isQ).length
+            qCount: paxAttendance.filter(a => a.isQ).length,
+            vqDate: paxAttendance.find(a => a.isVQ)?.date,
+            vqCount: paxAttendance.filter(a => a.isVQ).length,
+            fngDate: paxAttendance.find(a => a.isFNG)?.date,
+            fngCount: paxAttendance.filter(a => a.isFNG).length,
+            ppCount: paxAttendance.filter(a => a.isPP).length,
+            bbCount: paxAttendance.filter(a => a.isBB).length,
+            starskyCount: paxAttendance.filter(a => a.isStarsky).length,
+            secondHelpingCount: paxAttendance.filter(a => a.isSecondHelping).length,
           };
         });
 

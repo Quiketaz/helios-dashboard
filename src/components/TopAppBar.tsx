@@ -10,7 +10,7 @@ interface TopAppBarProps {
 export const TopAppBar: React.FC<TopAppBarProps> = ({ title, onTabChange }) => {
   const { searchTerm, setSearchTerm: onSearchChange } = useData();
   return (
-    <header className="sticky top-0 z-50 flex h-16 items-center gap-2 border-b border-outline-variant bg-surface/80 px-4 backdrop-blur-md transition-shadow duration-200 md:gap-4">
+    <header className="sticky top-0 z-50 flex h-16 items-center gap-2 bg-surface/80 px-4 backdrop-blur-md shadow-sm transition-shadow duration-200 md:gap-4">
       {/* Left Section: Logo and Title */}
       <div className="flex items-center gap-3">
         {/* Mobile View: Logo */}
@@ -58,7 +58,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ title, onTabChange }) => {
           <input
             type="text"
             placeholder="Search PAX..."
-            className="h-12 w-full rounded-full bg-surface-container pl-12 pr-4 text-on-surface outline-none transition-all placeholder:text-on-surface-variant focus:bg-surface-container-highest focus:ring-2 focus:ring-primary/20"
+            className="h-12 w-full rounded-full bg-surface-container pl-12 pr-4 text-on-surface outline-none transition-all placeholder:text-on-surface-variant focus:bg-surface-container-highest focus:ring-2 focus:ring-primary/20 shadow-sm border-none"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
           />

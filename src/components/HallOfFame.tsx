@@ -14,7 +14,7 @@ interface HallOfFameProps {
 type SortMode = 'posts' | 'consistency' | 'fng';
 
 export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
-  const [sortMode, setSortMode] = useState<SortMode>('posts');
+  const [sortMode, setSortMode] = useState<SortMode>('consistency');
 
   const sortedPax = useMemo(() => {
     let sorted = [...paxList];
@@ -22,8 +22,8 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
     if (sortMode === 'consistency') {
       sorted.sort((a, b) => b.consistency - a.consistency);
     } else if (sortMode === 'fng') {
-      // Filter out invalid dates
-      sorted = sorted.filter(p => p.firstBD && p.firstBD !== 'N/A');
+      // Filter for anyone who has at least one FNG record in their attendance history
+      sorted = sorted.filter(p => p.fngCount !== undefined && p.fngCount > 0);
       // Sort by First BD descending (Newest first)
       sorted.sort((a, b) => {
         try {
@@ -41,18 +41,19 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
   }, [paxList, sortMode]);
 
   return (
-    <DashboardCard className="border border-outline-variant/20 shadow-inner flex flex-col md:h-[800px]">
+    <DashboardCard className="shadow-md flex flex-col md:h-[800px]">
       <div className="flex-shrink-0 flex flex-col gap-4 mb-4 pb-4 border-b border-outline-variant/10">
+        {/* Active Metric Indicator */}
+        <div className="flex items-center gap-2 px-1">
+          <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">
+            Live Ranking: <span className="text-primary">
+              {sortMode === 'consistency' ? 'Consistency %' : sortMode === 'fng' ? 'Recruitment (FNGS)' : 'Total Volume (Posts)'}
+            </span>
+          </span>
+        </div>
         {/* Sort Controls */}
         <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-          <button 
-            onClick={() => setSortMode('fng')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all whitespace-nowrap
-              ${sortMode === 'fng' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
-            `}
-          >
-            <Calendar size={16} /> FNGs
-          </button>
           <button 
             onClick={() => setSortMode('consistency')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all whitespace-nowrap
@@ -60,6 +61,14 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
             `}
           >
             <TrendingUp size={16} /> Consistency
+          </button>
+          <button 
+            onClick={() => setSortMode('fng')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all whitespace-nowrap
+              ${sortMode === 'fng' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
+            `}
+          >
+            <Calendar size={16} /> Filter FNGS
           </button>
           <button 
             onClick={() => setSortMode('posts')}
@@ -72,10 +81,9 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
         </div>
       </div>
       
-      <div className="grid grid-rows-[repeat(3,auto)] grid-flow-col auto-cols-[85%] overflow-x-auto gap-3 pb-4 -mx-2 px-2 snap-x md:grid-rows-none md:grid-flow-row md:grid-cols-3 md:auto-cols-auto md:gap-4 md:overflow-y-auto md:content-start md:pr-2 md:-mr-2 md:pb-0 md:flex-1">
+      <div className="grid grid-rows-[repeat(3,auto)] grid-flow-col auto-cols-[48%] overflow-x-auto gap-2 pb-4 -mx-2 px-2 snap-x md:grid-rows-none md:grid-flow-row md:grid-cols-3 md:auto-cols-auto md:gap-4 md:overflow-y-auto md:content-start md:pr-2 md:-mr-2 md:pb-0 md:flex-1">
         {sortedPax.map((p, i) => {
           const stats = calculateRPGStats(p);
-          const isLegend = stats.class === 'Legend';
           const rank = i + 1;
           
           let RankIcon = null;
@@ -87,20 +95,19 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
             <button
               key={p.name}
               onClick={() => onPaxClick(p)}
-              className={`snap-center flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl border transition-all active:scale-[0.98] group text-left w-full
+              className={`snap-center flex items-center gap-2 md:gap-3 p-2 md:p-3 rounded-2xl border transition-all active:scale-[0.98] group text-left w-full
                 ${rank <= 3 ? 'bg-surface-container-high border-primary/20' : 'bg-surface-container-low border-outline-variant/20 hover:bg-surface-container-high'}
               `}
             >
-              <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl bg-surface-container border border-outline-variant/20 font-black text-lg text-on-surface-variant group-hover:border-primary/50 group-hover:text-primary transition-colors">
+              <div className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-xl bg-surface-container border border-outline-variant/20 font-black text-sm md:text-base text-on-surface-variant group-hover:border-primary/50 group-hover:text-primary transition-colors">
                 {RankIcon || <span className="opacity-50">#{rank}</span>}
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-base font-bold text-on-surface truncate group-hover:text-primary transition-colors">{p.name}</span>
-                  {isLegend && <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-primary text-on-primary uppercase tracking-wider">Legend</span>}
+                  <span className="text-sm md:text-base font-bold text-on-surface truncate group-hover:text-primary transition-colors">{p.name}</span>
                 </div>
-                <div className="flex items-center gap-3 mt-1 text-xs text-on-surface-variant">
+                <div className="flex items-center gap-2 mt-0.5 text-[10px] md:text-xs text-on-surface-variant">
                   <span className="font-medium">{stats.class}</span>
                   <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
                   <span className="font-medium">
@@ -118,12 +125,6 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
                 {p.awards.length > 3 && (
                   <span className="px-1.5 py-0.5 rounded-full bg-surface-container-highest text-[10px] font-bold text-on-surface-variant">+{p.awards.length - 3}</span>
                 )}
-              </div>
-              
-              <div className="sm:hidden">
-                <div className="text-xl font-black text-primary">
-                  {sortMode === 'consistency' ? `${p.consistency}%` : p.posts}
-                </div>
               </div>
             </button>
           );

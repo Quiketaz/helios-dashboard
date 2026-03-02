@@ -1,3 +1,20 @@
+export interface AttendanceRecord {
+  date: string;
+  name: string;
+  bdCount: number;
+  ddCount: number;
+  qLead?: string;
+  isQ: boolean;
+  isVQ: boolean;
+  isFNG: boolean;
+  isPP: boolean;
+  isBB: boolean;
+  isStarsky: boolean;
+  isSecondHelping: boolean;
+  location: string;
+  type: string;
+}
+
 export interface PaxData {
   name: string;
   posts: number;
@@ -6,6 +23,16 @@ export interface PaxData {
   lastBD: string;
   homeAo: string;
   awards: string[];
+  attendance?: AttendanceRecord[];
+  qCount?: number;
+  vqCount?: number;
+  fngCount?: number;
+  ppCount?: number;
+  bbCount?: number;
+  starskyCount?: number;
+  secondHelpingCount?: number;
+  vqDate?: string;
+  fngDate?: string;
 }
 
 export interface QRecord {
