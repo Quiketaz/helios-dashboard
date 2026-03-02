@@ -10,7 +10,7 @@ import { parseDate } from '../utils/dateUtils';
 
 
 export const DashboardView = () => {
-  const { paxList, qList, setSelectedPax } = useData();
+  const { filteredPax, qList, setSelectedPax } = useData();
   const [isWeatherExpanded, setIsWeatherExpanded] = useState(false);
 
   const nextQ = useMemo(() => {
@@ -27,10 +27,10 @@ export const DashboardView = () => {
   }, [qList]);
 
   const spotlightPax = useMemo(() => {
-    const eligible = paxList.filter(p => p.posts > 50);
+    const eligible = filteredPax.filter(p => p.posts > 50);
     if (eligible.length === 0) return null;
     return eligible[Math.floor(Math.random() * eligible.length)];
-  }, [paxList]);
+  }, [filteredPax]);
 
   return (
     <div className="space-y-10 pb-20 lg:pb-0">
@@ -73,7 +73,7 @@ export const DashboardView = () => {
         </div>
       </div>
 
-      <HallOfFame paxList={paxList} onPaxClick={setSelectedPax} />
+      <HallOfFame paxList={filteredPax} onPaxClick={setSelectedPax} />
 
       {/* The F3 Way & AO Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

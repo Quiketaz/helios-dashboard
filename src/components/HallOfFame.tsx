@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Trophy, Medal, Crown, Zap, TrendingUp, Calendar } from 'lucide-react';
+import { Medal, Crown, Zap, TrendingUp, Calendar } from 'lucide-react';
 import { AwardBadge } from './AwardBadge';
 import { DashboardCard } from './DashboardCard';
 import { calculateRPGStats } from '../utils/f3Logic';
@@ -43,41 +43,31 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
   return (
     <DashboardCard className="border border-outline-variant/20 shadow-inner flex flex-col md:h-[800px]">
       <div className="flex-shrink-0 flex flex-col gap-4 mb-4 pb-4 border-b border-outline-variant/10">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-primary/10 rounded-xl">
-            <Trophy className="text-primary" size={24} />
-          </div>
-          <div>
-            <h2 className="text-xl md:text-2xl font-black italic text-on-surface uppercase tracking-tight">Hall of Fame</h2>
-            <p className="text-xs text-on-surface-variant font-medium">Top performers and legends of the gloom</p>
-          </div>
-        </div>
-
         {/* Sort Controls */}
         <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
           <button 
             onClick={() => setSortMode('posts')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border transition-all whitespace-nowrap
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all whitespace-nowrap
               ${sortMode === 'posts' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
             `}
           >
-            <Zap size={14} /> Top Posts
+            <Zap size={16} /> Top Posts
           </button>
           <button 
             onClick={() => setSortMode('consistency')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border transition-all whitespace-nowrap
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all whitespace-nowrap
               ${sortMode === 'consistency' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
             `}
           >
-            <TrendingUp size={14} /> Consistency
+            <TrendingUp size={16} /> Consistency
           </button>
           <button 
             onClick={() => setSortMode('fng')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border transition-all whitespace-nowrap
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all whitespace-nowrap
               ${sortMode === 'fng' ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary/50'}
             `}
           >
-            <Calendar size={14} /> FNGs
+            <Calendar size={16} /> FNGs
           </button>
         </div>
       </div>
@@ -97,11 +87,11 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
             <button
               key={p.name}
               onClick={() => onPaxClick(p)}
-              className={`snap-center flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] group text-left w-full
+              className={`snap-center flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl border transition-all active:scale-[0.98] group text-left w-full
                 ${rank <= 3 ? 'bg-surface-container-high border-primary/20' : 'bg-surface-container-low border-outline-variant/20 hover:bg-surface-container-high'}
               `}
             >
-              <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-surface-container border border-outline-variant/20 font-black text-lg text-on-surface-variant group-hover:border-primary/50 group-hover:text-primary transition-colors">
+              <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl bg-surface-container border border-outline-variant/20 font-black text-lg text-on-surface-variant group-hover:border-primary/50 group-hover:text-primary transition-colors">
                 {RankIcon || <span className="opacity-50">#{rank}</span>}
               </div>
 

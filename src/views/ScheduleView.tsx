@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Calendar, Clock, User, AlertCircle, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { getWeekRange, formatWeekLabel, getEventsForWeek, parseDate } from '../utils/dateUtils';
 import { Logo } from '../components/Logo';
 
 export const ScheduleView = () => {
-  const { qList, qLoading: loading, qError: error } = useData();
+  const { qList, qLoading: loading, qError: error, searchTerm } = useData();
   const [weekOffset, setWeekOffset] = useState(0);
+
+  const filteredQList = useMemo(() => {
+    if (!searchTerm) return qList;
+    return qList.filter(q => (q.q || '').toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [qList, searchTerm]);
 
   const [weekStart, weekEnd] = getWeekRange(weekOffset);
   const weekLabel = formatWeekLabel(weekStart, weekEnd);
-  const weekEvents = getEventsForWeek(qList, weekOffset);
+  const weekEvents = getEventsForWeek(filteredQList, weekOffset);
 
   return (
     <div className="space-y-6 pb-24 lg:pb-0">

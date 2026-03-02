@@ -6,17 +6,17 @@ import { AwardBadge } from '../components/AwardBadge';
 //import type { PaxData } from '../types';
 
 export const LeaderboardView = () => {
-  const { paxList, setSelectedPax } = useData();
+  const { filteredPax, setSelectedPax } = useData();
 
   const rankedPax = useMemo(() => {
-    return paxList
+    return filteredPax
       .map(p => ({
         ...p,
         stats: calculateRPGStats(p)
       }))
       .sort((a, b) => b.stats.impact - a.stats.impact)
       .slice(0, 50); // Display top 50
-  }, [paxList]);
+  }, [filteredPax]);
 
   return (
     <div className="space-y-8">
