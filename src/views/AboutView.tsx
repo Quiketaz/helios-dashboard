@@ -1,4 +1,4 @@
-import React from 'react';
+//import React from 'react';
 import { Shield, Users, Sun, Target, MessageCircle, HeartHandshake } from 'lucide-react';
 import { DashboardCard } from '../components/DashboardCard';
 
