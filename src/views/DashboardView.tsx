@@ -1,17 +1,18 @@
-import { useMemo } from 'react';
-import { Trophy, Calendar, Target, Instagram } from 'lucide-react';
-import type { PaxData, QRecord } from '../types';
-import { AwardBadge } from '../components/AwardBadge';
-import { OperatorCard } from '../components/OperatorCard';
+import { useMemo, useState } from 'react';
+import { Calendar, Target, Instagram, User } from 'lucide-react';
+import { Logo } from '../components/Logo';
+import { PaxSpotlight } from '../components/OperatorCard';
 import { WeatherCard } from '../components/WeatherCard';
+import { HallOfFame } from '../components/HallOfFame';
+import { useData } from '../context/DataContext';
+//import type { parseDate } from './utils/dateUtils';
+import { parseDate } from '../utils/dateUtils';
 
-// Helper: Parse date string (M/D/YYYY format) to Date object
-const parseDate = (dateStr: string): Date => {
-  const [month, day, year] = dateStr.split('/').map(Number);
-  return new Date(year, month - 1, day);
-};
 
-export const DashboardView = ({ paxList, qList, onPaxClick }: { paxList: PaxData[], qList: QRecord[], onPaxClick: (pax: PaxData) => void }) => {
+export const DashboardView = () => {
+  const { paxList, qList, setSelectedPax } = useData();
+  const [isWeatherExpanded, setIsWeatherExpanded] = useState(false);
+
   const nextQ = useMemo(() => {
     if (!qList || qList.length === 0) return null;
     const today = new Date();
@@ -25,69 +26,54 @@ export const DashboardView = ({ paxList, qList, onPaxClick }: { paxList: PaxData
       .sort((a, b) => parseDate(a.date).getTime() - parseDate(b.date).getTime())[0];
   }, [qList]);
 
+  const spotlightPax = useMemo(() => {
+    const eligible = paxList.filter(p => p.posts > 50);
+    if (eligible.length === 0) return null;
+    return eligible[Math.floor(Math.random() * eligible.length)];
+  }, [paxList]);
+
   return (
     <div className="space-y-10 pb-20 lg:pb-0">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="lg:col-span-2">
-          <OperatorCard 
-            name="Site Lead" 
-            operatorId="HELIOS-ALPHA" 
-            shieldStrength={92} 
-            rank="COMMANDER" 
-          />
+          <PaxSpotlight pax={spotlightPax} />
         </div>
-        <WeatherCard />
-        <div className="rounded-3xl bg-surface-container p-8 flex flex-col justify-center border border-outline-variant/20 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <Calendar className="text-primary" size={24} />
-            <h3 className="text-sm font-bold text-primary uppercase tracking-[0.2em]">Next Beatdown</h3>
+        <div className="lg:col-span-2 rounded-3xl bg-surface-container-high p-5 shadow-md border border-outline-variant/10 relative overflow-hidden flex items-center justify-between gap-4">
+          {/* Watermark Logo */}
+          <div className="pointer-events-none absolute -bottom-4 -right-4 opacity-[0.03]">
+            <Logo size="lg" />
           </div>
-          <div className="text-3xl font-black text-primary mb-1">
-            {nextQ ? nextQ.date : 'TBD'}
+
+          {/* Left: Mission Info */}
+          <div className="relative z-10 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Calendar size={14} className="text-primary" />
+              <p className="text-[9px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">Next Beatdown</p>
+            </div>
+            <div className={`transition-all duration-500 ${isWeatherExpanded ? 'opacity-0 -translate-x-2 blur-sm' : 'opacity-100 translate-x-0 blur-0'}`}>
+              <h2 className="text-2xl font-black text-primary uppercase tracking-tighter leading-none">
+                {nextQ ? nextQ.date : 'TBD'}
+              </h2>
+              <div className="mt-1 inline-flex px-2 py-0.5 rounded-full border border-primary/20 bg-primary/5 font-bold text-[9px] uppercase tracking-widest text-primary">
+                {nextQ ? (nextQ.type || 'Bootcamp') : 'Scheduled'}
+              </div>
+            </div>
           </div>
-          <div className="text-lg font-medium text-on-surface-variant">
-            {nextQ ? (nextQ.q || 'OPEN') : 'No upcoming schedule'}
+
+          {/* Right: Q Lead & Weather */}
+          <div className="relative z-10 flex flex-col items-end gap-2">
+            <div className={`transition-all duration-500 ${isWeatherExpanded ? 'opacity-0 translate-x-2 blur-sm' : 'opacity-100 translate-x-0 blur-0'}`}>
+              <div className="flex items-center gap-1.5 bg-surface-container-highest px-2 py-1 rounded-lg border border-outline-variant/10">
+                <User size={12} className="text-primary" />
+                <span className="text-[11px] font-bold text-on-surface">{nextQ ? (nextQ.q || 'OPEN') : 'TBD'}</span>
+              </div>
+            </div>
+            <WeatherCard isExpanded={isWeatherExpanded} onToggle={setIsWeatherExpanded} />
           </div>
         </div>
       </div>
 
-      <div className="bg-surface-container border border-outline-variant/20 rounded-[2.5rem] p-6 md:p-8 shadow-inner">
-        <div className="flex items-center gap-3 mb-8">
-          <Trophy className="text-primary" size={24} />
-          <h2 className="text-xl md:text-2xl font-black italic text-on-surface uppercase tracking-tight">Hall of Fame</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-          {paxList.slice(0, 20).map((p, i) => {
-            const isLegend = p.posts >= 100;
-            const status = isLegend ? 'Legend' : p.posts >= 50 ? 'Commander' : 'Warrior';
-            
-            return (
-              <button
-                key={p.name}
-                onClick={() => onPaxClick(p)}
-                className="w-full flex flex-col p-3 md:p-5 bg-surface-container-low rounded-2xl border border-outline-variant/30 hover:border-primary/50 hover:bg-surface-container-high transition-all active:scale-[0.98] group text-left shadow-sm"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <span className="text-primary font-black italic text-base md:text-lg w-5 md:w-6 opacity-40 group-hover:opacity-100 transition-opacity">{(i + 1).toString().padStart(2, '0')}</span>
-                    <div>
-                      <div className="text-sm md:text-base font-bold text-on-surface group-hover:text-primary transition-colors">{p.name}</div>
-                      <div className={`text-[10px] font-bold uppercase tracking-widest ${isLegend ? 'text-primary' : 'text-on-surface-variant'}`}>{status}</div>
-                    </div>
-                  </div>
-                  <span className="text-lg md:text-xl font-black text-primary">{p.posts}</span>
-                </div>
-                
-                <div className="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-outline-variant/20">
-                  {p.awards.length > 0 ? p.awards.map(a => (
-                    <AwardBadge key={a} award={a} />
-                  )) : <span className="text-[9px] text-on-surface-variant/50 font-bold uppercase italic">No Awards</span>}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <HallOfFame paxList={paxList} onPaxClick={setSelectedPax} />
 
       {/* The F3 Way & AO Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

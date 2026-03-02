@@ -1,12 +1,12 @@
 import React from 'react';
+import { useData } from '../context/DataContext';
 
 interface TopAppBarProps {
   title?: string;
-  searchTerm: string;
-  onSearchChange: (value: string) => void;
 }
 
-export const TopAppBar: React.FC<TopAppBarProps> = ({ title, searchTerm, onSearchChange }) => {
+export const TopAppBar: React.FC<TopAppBarProps> = ({ title }) => {
+  const { searchTerm, setSearchTerm: onSearchChange } = useData();
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-outline-variant bg-surface/80 px-4 backdrop-blur-md transition-shadow duration-200">
       {/* Left Section: Logo and Title */}

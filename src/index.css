@@ -30,15 +30,6 @@
   /* Outline and Accents */
   --color-outline: #999080;
   --color-outline-variant: #4D4639;
-
-  /* Custom Animations */
-  --animate-level-up: level-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-
-  @keyframes level-up {
-    0% { transform: scale(1); filter: brightness(1); }
-    50% { transform: scale(1.15); filter: brightness(1.2) drop-shadow(0 0 15px var(--color-primary)); }
-    100% { transform: scale(1); filter: brightness(1); }
-  }
 }
 
 @layer base {

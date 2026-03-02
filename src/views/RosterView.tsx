@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { PaxData } from '../types';
+//import type { PaxData } from '../types';
+import { useData } from '../context/DataContext';
 
 const ITEMS_PER_PAGE = 15;
 
-export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[], onPaxClick: (pax: PaxData) => void }) => {
+export const RosterView = () => {
+  const { filteredPax, setSelectedPax: onPaxClick } = useData();
   const [currentPage, setCurrentPage] = useState(1);
   const [prevFilteredPax, setPrevFilteredPax] = useState(filteredPax);
 
@@ -25,8 +27,9 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
           <thead>
             <tr className="bg-surface-container">
               <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest">PAX Name</th>
-              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest text-center">Posts</th>
+              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest text-center">Postings</th>
               <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest text-center">Consistency</th>
+              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest">First BD</th>
               <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest">Last BD</th>
               <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest">Awards</th>
             </tr>
@@ -60,6 +63,7 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
                     {p.consistency}%
                   </span>
                 </td>
+                <td className="p-5 text-xs text-on-surface-variant font-medium">{p.firstBD}</td>
                 <td className="p-5 text-xs text-on-surface-variant font-medium">{p.lastBD}</td>
                 <td className="p-5">
                   <div className="flex gap-2">
@@ -122,8 +126,10 @@ export const RosterView = ({ filteredPax, onPaxClick }: { filteredPax: PaxData[]
                 {p.awards.some(a => a.toLowerCase().startsWith('shirt')) && (
                   <span className="text-[9px] font-black text-primary border border-primary/30 bg-primary/10 px-1.5 py-0.5 rounded-md uppercase tracking-tighter">Centurion</span>
                 )}
-                <div className="text-lg font-black text-primary">{p.posts}</div>
-                <div className="text-[10px] font-bold text-on-surface-variant uppercase">Posts</div>
+                <div className="flex flex-col items-end">
+                  <div className="text-lg font-black text-primary">{p.posts}</div>
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase">Postings</div>
+                </div>
               </div>
             </div>
           ))}

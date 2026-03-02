@@ -1,66 +1,10 @@
 import { useState } from 'react';
 import { Calendar, Clock, User, AlertCircle, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { QRecord } from '../types';
+import { useData } from '../context/DataContext';
+import { getWeekRange, formatWeekLabel, getEventsForWeek, parseDate } from '../utils/dateUtils';
 
-interface ScheduleViewProps {
-  qList: QRecord[];
-  loading: boolean;
-  error: string | null;
-}
-
-// Helper: Parse date string (M/D/YYYY format) to Date object
-const parseDate = (dateStr: string): Date => {
-  const [month, day, year] = dateStr.split('/').map(Number);
-  return new Date(year, month - 1, day);
-};
-
-// Helper: Get the start of the week (Sunday) for a given date
-const getWeekStart = (date: Date): Date => {
-  const d = new Date(date);
-  const dayOfWeek = d.getDay();
-  const diff = d.getDate() - dayOfWeek;
-  return new Date(d.setDate(diff));
-};
-
-// Helper: Get week range as [start, end] dates
-const getWeekRange = (weekOffset: number): [Date, Date] => {
-  const today = new Date();
-  const start = getWeekStart(today);
-  start.setDate(start.getDate() + weekOffset * 7);
-  const end = new Date(start);
-  end.setDate(end.getDate() + 6);
-  return [start, end];
-};
-
-// Helper: Format week label
-const formatWeekLabel = (start: Date, end: Date): string => {
-  const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  return `${startStr} - ${endStr}`;
-};
-
-// Helper: Filter events for a given week
-const getEventsForWeek = (events: QRecord[], weekOffset: number): QRecord[] => {
-  const [weekStart, weekEnd] = getWeekRange(weekOffset);
-  return events
-    .filter((event) => {
-      try {
-        const eventDate = parseDate(event.date);
-        return eventDate >= weekStart && eventDate <= weekEnd;
-      } catch {
-        return false;
-      }
-    })
-    .sort((a, b) => {
-      try {
-        return parseDate(a.date).getTime() - parseDate(b.date).getTime();
-      } catch {
-        return 0;
-      }
-    });
-};
-
-export const ScheduleView = ({ qList, loading, error }: ScheduleViewProps) => {
+export const ScheduleView = () => {
+  const { qList, qLoading: loading, qError: error } = useData();
   const [weekOffset, setWeekOffset] = useState(0);
 
   const [weekStart, weekEnd] = getWeekRange(weekOffset);

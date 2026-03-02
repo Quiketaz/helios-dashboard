@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Sword, Shield, Zap, Crown, Award, Calendar, MapPin, TrendingUp, Info, LayoutGrid, History } from 'lucide-react';
-import type { PaxData } from '../types';
+import { useState, useMemo } from 'react';
+import { Sword, Shield, Zap, Crown, Award, Calendar, TrendingUp, Info, History } from 'lucide-react';
+//import type { PaxData } from '../types';
 import { RadialAttribute } from '../components/RadialAttribute';
-import { calculateRPGStats, getClassColor, getClassBgColor, getClassTextColor } from '../utils';
-
-interface ProfileViewProps {
-  pax: PaxData;
-  onBack: () => void;
-}
+import { getClassColor, getClassBgColor, getClassTextColor } from '../utils/utils';
+import { calculateRPGStats } from '../utils/f3Logic';
+import { useData } from '../context/DataContext';
 
 const ACHIEVEMENT_DEFS = [
   { id: 'shirt', name: 'Centurion', icon: '👕', requirement: 'Earned at 100 Posts', target: 100 },
@@ -15,20 +12,27 @@ const ACHIEVEMENT_DEFS = [
   { id: 'cindy', name: 'Cindy', icon: '🧱', requirement: 'Complete the Cindy Challenge', target: 1 },
 ];
 
-export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
+export const ProfileView = () => {
+  const { selectedPax: pax, setSelectedPax } = useData();
+
+  if (!pax) return null;
+
+  const onBack = () => setSelectedPax(null);
+
   const stats = calculateRPGStats(pax); // Calculate RPG metrics based on PAX attendance
   const classColor = getClassColor(stats.class);
   const classBg = getClassBgColor(stats.class);
   const classText = getClassTextColor(stats.class);
 
-  const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [activeTab, setActiveTab] = useState<'achievements' | 'journey'>('achievements');
 
-  useEffect(() => {
-    setIsLevelingUp(true);
-    const timer = setTimeout(() => setIsLevelingUp(false), 800);
-    return () => clearTimeout(timer);
-  }, [stats.level]);
+  // Filter attendance to only show significant milestones
+  const milestones = useMemo(() => {
+    return [
+      { label: 'Latest Mission', date: pax.lastBD },
+      { label: 'Initial Deployment', date: pax.firstBD }
+    ];
+  }, [pax.firstBD, pax.lastBD]);
 
   return (
     <div className="min-h-screen bg-surface pb-20 selection:bg-primary/30">
@@ -42,34 +46,15 @@ export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
 
       {/* Hero Section */}
       <div className={`relative pt-16 md:pt-32 pb-12 md:pb-40 bg-gradient-to-b ${classColor} transition-all duration-500`}>
-        <div className="absolute inset-0 opacity-20 bg-zinc-950" />
+        <div className="absolute inset-0 opacity-20 bg-surface" />
         <div className="relative px-4 md:px-10 text-center space-y-2 md:space-y-4">
           <div className={`inline-block px-4 py-1.5 md:px-6 md:py-2 rounded-full border ${classBg} ${classText} font-black text-[10px] md:text-sm uppercase tracking-widest`}>
             {stats.class}
           </div>
           <h1 className="text-4xl md:text-6xl font-black italic text-on-surface uppercase tracking-tighter drop-shadow-lg leading-none">{pax.name}</h1>
-          <div className={`flex items-center justify-center gap-2 md:gap-4 transition-all ${isLevelingUp ? 'animate-level-up' : ''}`}>
-            <Crown className="text-primary" size={18} />
-            <span className="text-2xl md:text-3xl font-black text-on-surface">Level {stats.level}</span>
-            <Crown className="text-primary" size={18} />
-          </div>
-        </div>
-
-        {/* XP Bar */}
-        <div className="relative mt-8 px-6 md:px-10 max-w-2xl mx-auto">
-          <div className="bg-surface-container-low/40 border border-outline-variant/20 rounded-2xl md:rounded-[2rem] p-4 backdrop-blur-xl shadow-xl">
-            <div className="space-y-2">
-              <div className="flex justify-between text-[10px] md:text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-                <span>XP Progress</span>
-                <span>{stats.experience}%</span>
-              </div>
-              <div className="w-full bg-surface-container-highest rounded-full h-3 border border-outline-variant/10 overflow-hidden">
-                <div
-                  className="h-full bg-primary rounded-full shadow-[0_0_15px_rgba(255,215,0,0.3)]"
-                  style={{ width: `${stats.experience}%` }}
-                />
-              </div>
-            </div>
+          <div className="flex items-center justify-center gap-2 text-primary">
+            <Zap size={20} fill="currentColor" />
+            <span className="text-2xl md:text-3xl font-black uppercase tracking-tight">{pax.posts} Posting Count</span>
           </div>
         </div>
       </div>
@@ -84,25 +69,25 @@ export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
               Core Attributes
             </h2>
             <p className="text-on-surface-variant text-xs md:text-sm mt-2 font-medium leading-relaxed max-w-2xl">
-              RPG metrics are calculated based on your F3 journey. <span className="text-primary/80">Stamina</span> grows with total posts, <span className="text-cyan-400/80">Agility</span> increases with AO variety, and <span className="text-cyan-400/80">Leadership</span> is forged by leading the Q.
+              Tactical metrics derived from mission history. <span className="text-primary/80">Fitness</span> tracks total volume, <span className="text-primary/80">Fellowship</span> measures consistency, and <span className="text-primary/80">Impact</span> represents community leadership.
             </p>
           </div>
           <div className="grid grid-cols-3 gap-2 md:gap-12">
             <RadialAttribute
-              label="Stamina"
-              value={stats.stamina}
+              label="Fitness"
+              value={stats.fitness}
               max={100}
               icon={Zap}
             />
             <RadialAttribute
-              label="Agility"
-              value={stats.agility}
+              label="Fellowship"
+              value={stats.fellowship}
               max={100}
               icon={TrendingUp}
             />
             <RadialAttribute
-              label="Leadership"
-              value={stats.leadership}
+              label="Impact"
+              value={stats.impact}
               max={100}
               icon={Shield}
             />
@@ -198,42 +183,37 @@ export const ProfileView = ({ pax, onBack }: ProfileViewProps) => {
 
           {/* Journey - Visible on Desktop or when Tab is active */}
           <div className={`${activeTab === 'journey' ? 'block' : 'hidden md:block'} bg-surface-container border border-outline-variant/20 rounded-3xl md:rounded-[2.5rem] p-5 md:p-10 shadow-sm`}>
-            <h3 className="text-xl font-black italic text-primary uppercase mb-6 flex items-center gap-2">
-              <Calendar size={18} />
-              Journey
-            </h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-4 bg-surface-container-low border border-outline-variant/10 rounded-2xl">
-                <div>
-                  <span className="text-sm text-on-surface-variant uppercase font-bold block">Total Posts</span>
-                  {pax.posts < 100 && !pax.awards.some(a => a.toLowerCase().startsWith('shirt')) && (
-                    <span className="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-tighter">
-                      {100 - pax.posts} more to the 100 Shirt
-                    </span>
-                  )}
-                </div>
-                <span className="text-2xl font-black text-primary">{pax.posts}</span>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-surface-container-low border border-outline-variant/10 rounded-2xl">
-                <span className="text-sm text-on-surface-variant uppercase font-bold">Consistency</span>
-                <span className={`text-2xl font-black ${pax.consistency > 50 ? 'text-green-400' : 'text-orange-400'}`}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-black italic text-primary uppercase flex items-center gap-2">
+                <Calendar size={18} />
+                Journey
+              </h3>
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Consistency</span>
+                <span className={`text-lg font-black ${pax.consistency >= 50 ? 'text-green-500' : 'text-primary'}`}>
                   {pax.consistency}%
                 </span>
               </div>
-              <div className="flex justify-between items-center p-4 bg-surface-container-low border border-outline-variant/10 rounded-2xl">
-                <span className="text-sm text-on-surface-variant uppercase font-bold">First BD</span>
-                <span className="font-bold text-on-surface">{pax.firstBD}</span>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-surface-container-low border border-outline-variant/10 rounded-2xl">
-                <span className="text-sm text-on-surface-variant uppercase font-bold">Last BD</span>
-                <span className="font-bold text-on-surface">{pax.lastBD}</span>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-surface-container-low border border-outline-variant/10 rounded-2xl">
-                <span className="text-sm text-on-surface-variant uppercase font-bold">Home AO</span>
-                <span className="font-bold text-on-surface flex items-center gap-2">
-                  <MapPin size={16} />
-                  {pax.homeAo}
-                </span>
+            </div>
+            <div className="relative">
+              {/* Vertical Line */}
+              <div className="absolute left-4 top-2 bottom-2 w-px bg-outline-variant/30" />
+              
+              <div className="space-y-6">
+                {milestones.map((m, idx) => (
+                  <div key={idx} className="relative pl-12 group">
+                    <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/20 flex items-center justify-center z-10 transition-colors group-hover:border-primary/40">
+                      <div className="w-2 h-2 rounded-full bg-primary/60" />
+                    </div>
+                    
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-primary uppercase tracking-widest mb-0.5">
+                        {m.label}
+                      </span>
+                      <span className="text-sm font-bold text-on-surface">{m.date}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

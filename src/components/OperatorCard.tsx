@@ -1,58 +1,50 @@
 import React from 'react';
 import { Logo } from './Logo';
+import { Zap, Calendar, Award } from 'lucide-react';
+import type { PaxData } from '../types';
+import { determineRPGClass, getClassBgColor, getClassTextColor } from '../utils/utils';
 
-interface OperatorCardProps {
-  name: string;
-  operatorId: string;
-  shieldStrength: number;
-  rank: string;
-}
+export const PaxSpotlight: React.FC<{ pax: PaxData | null }> = ({ pax }) => {
+  if (!pax) return null;
 
-export const OperatorCard: React.FC<OperatorCardProps> = ({
-  name,
-  operatorId,
-  shieldStrength,
-  rank,
-}) => {
+  const rank = determineRPGClass(pax.consistency);
+  const classBg = getClassBgColor(rank);
+  const classText = getClassTextColor(rank);
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-surface-container-high p-6 shadow-md transition-all hover:shadow-lg">
-      {/* Watermark Logo */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.05]">
-        <Logo size="xl" />
+    <div className="relative overflow-hidden rounded-3xl bg-surface-container-high p-5 shadow-md transition-all hover:shadow-lg border border-outline-variant/10 flex items-center justify-between gap-4">
+      {/* Watermark Logo - Tucked into the corner */}
+      <div className="pointer-events-none absolute -bottom-4 -right-4 opacity-[0.03]">
+        <Logo size="lg" />
       </div>
 
       {/* Card Content */}
-      <div className="relative z-10 flex flex-col gap-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-sm font-medium text-on-surface-variant uppercase tracking-wider">
-              Operator Identity
-            </p>
-            <h2 className="mt-1 text-2xl font-bold text-primary">
-              {name}
-            </h2>
-            <p className="text-sm font-mono text-on-surface-variant">
-              ID: {operatorId}
-            </p>
-          </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary shadow-sm">
-            <span className="text-xs font-bold text-on-primary">{rank}</span>
+      <div className="relative z-10 flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <Award size={14} className="text-primary" />
+          <p className="text-[9px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">
+            Spotlight
+          </p>
+        </div>
+        
+        <div>
+          <h2 className="text-2xl font-black text-primary uppercase tracking-tighter leading-none">
+            {pax.name}
+          </h2>
+          <div className={`mt-1 inline-flex px-2 py-0.5 rounded-full border ${classBg} ${classText} font-bold text-[9px] uppercase tracking-widest`}>
+            {rank}
           </div>
         </div>
+      </div>
 
-        <div className="flex items-center gap-4 rounded-2xl bg-surface-container-low p-4 border border-outline-variant/30">
-          <div className="text-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
-              <path fillRule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clipRule="evenodd" />
-              <path d="M12.53 10.28a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 1 1 1.06-1.06L12 8.69l2.47-2.47a.75.75 0 1 1 1.06 1.06l-3 3Z" />
-            </svg>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs text-on-surface-variant font-medium uppercase">Shield Strength</span>
-            <span className="text-xl font-black text-primary">
-              {shieldStrength}%
-            </span>
-          </div>
+      <div className="relative z-10 flex flex-col items-end gap-2">
+        <div className="flex items-center gap-1.5 bg-surface-container-highest px-2 py-1 rounded-lg border border-outline-variant/10">
+          <Calendar size={12} className="text-primary" />
+          <span className="text-[11px] font-bold text-on-surface">{pax.firstBD}</span>
+        </div>
+        <div className="flex items-center gap-1.5 bg-primary/10 px-2 py-1 rounded-lg border border-primary/20">
+          <Zap size={12} fill="currentColor" className="text-primary" />
+          <span className="text-sm font-black text-primary">{pax.posts}</span>
         </div>
       </div>
     </div>
