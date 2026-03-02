@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Calendar, Clock, User, AlertCircle, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { getWeekRange, formatWeekLabel, getEventsForWeek, parseDate } from '../utils/dateUtils';
+import { Logo } from '../components/Logo';
 
 export const ScheduleView = () => {
   const { qList, qLoading: loading, qError: error } = useData();
