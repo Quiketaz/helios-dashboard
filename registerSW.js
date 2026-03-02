@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/helios-dashboard/sw.js', { scope: '/helios-dashboard/' })})}
