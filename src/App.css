@@ -1,13 +1,9 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  @apply max-w-screen-xl mx-auto p-8 text-center;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  @apply h-24 p-6;
   will-change: filter;
   transition: filter 300ms;
 }
@@ -35,8 +31,12 @@
 
 .card {
   padding: 2em;
+  /* Use MD3 surface container for elevation against the dark body */
+  background-color: var(--color-surface-container);
+  @apply rounded-2xl;
 }
 
 .read-the-docs {
-  color: #888;
+  /* Use theme variable for consistent text hierarchy */
+  color: var(--color-on-surface-variant);
 }

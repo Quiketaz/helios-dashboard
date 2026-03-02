@@ -27,4 +27,4 @@ export interface RPGStats {
   impact: number;
 }
 
-export type TabType = 'DASHBOARD' | 'ROSTER' | 'SCHEDULE' | 'STATS' | 'ADMIN' | 'PROFILE' | 'ABOUT';
+export type TabType = 'DASHBOARD' | 'ROSTER' | 'SCHEDULE' | 'STATS' | 'ADMIN' | 'ABOUT' |  'PROFILE' | 'SETTINGS'

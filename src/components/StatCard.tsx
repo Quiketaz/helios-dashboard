@@ -1,11 +1,12 @@
 import React from 'react';
+import { DashboardCard } from './DashboardCard';
 
 export const StatCard = ({ title, value, icon }: { title: string, value: string, icon: React.ReactNode }) => (
-  <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl shadow-xl">
-    <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">{title}</p>
+  <DashboardCard className="border border-outline-variant/20 p-5 shadow-xl">
+    <p className="text-[10px] text-on-surface-variant uppercase font-black tracking-widest mb-1">{title}</p>
     <div className="flex items-center gap-2">
-      <span className="text-yellow-400">{icon}</span>
-      <span className="text-2xl font-black text-white">{value}</span>
+      <span className="text-primary">{icon}</span>
+      <span className="text-2xl font-black text-on-surface">{value}</span>
     </div>
-  </div>
+  </DashboardCard>
 );

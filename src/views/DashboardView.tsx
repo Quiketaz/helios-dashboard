@@ -35,7 +35,7 @@ export const DashboardView = () => {
   return (
     <div className="space-y-10 pb-20 lg:pb-0">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="lg:col-span-2">
+        <div className="hidden md:block lg:col-span-2">
           <PaxSpotlight pax={spotlightPax} />
         </div>
         <div className="lg:col-span-2 rounded-3xl bg-surface-container-high p-5 shadow-md border border-outline-variant/10 relative overflow-hidden flex items-center justify-between gap-4">
@@ -77,17 +77,17 @@ export const DashboardView = () => {
 
       {/* The F3 Way & AO Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 bg-surface-container border border-outline-variant/20 rounded-[2.5rem] p-6 md:p-10 shadow-sm">
-          <h3 className="text-xl font-black italic text-on-surface uppercase mb-6 flex items-center gap-2">
-            <Target size={20} className="text-primary" />
-            The F3 Mission
-          </h3>
-          <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
+        <div className="md:col-span-2 bg-surface-container border border-outline-variant/20 rounded-3xl p-5 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-2 mb-3">
+            <Target size={18} className="text-primary" />
+            <h3 className="text-lg font-black italic text-on-surface uppercase tracking-tight">The F3 Mission</h3>
+          </div>
+          <p className="text-on-surface-variant text-xs leading-relaxed mb-4">
             To plant, grow and serve small men’s workout groups for the <span className="text-on-surface font-bold">invigoration of male leadership</span> in the community.
           </p>
-          <div className="flex flex-wrap gap-2">
-            {['Free', 'All Men', 'Outdoors', 'Peer-led', 'Circle of Trust'].map((pillar) => (
-              <span key={pillar} className="px-3 py-1 bg-surface-container-highest border border-outline-variant/10 rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+          <div className="flex flex-wrap gap-1.5">
+            {['Free', 'All Men', 'Outdoors', 'Peer-led', 'COT'].map((pillar) => (
+              <span key={pillar} className="px-2 py-0.5 bg-surface-container-highest border border-outline-variant/10 rounded-md text-[9px] font-black uppercase tracking-wider text-on-surface-variant">
                 {pillar}
               </span>
             ))}
@@ -98,9 +98,9 @@ export const DashboardView = () => {
           href="https://www.instagram.com/f3northkaty_helios/" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="group relative bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-outline-variant/20 rounded-[2.5rem] p-6 md:p-10 flex flex-col items-center justify-center text-center transition-all hover:border-pink-500/50 shadow-sm overflow-hidden"
+          className="group relative bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-outline-variant/20 rounded-3xl p-5 flex flex-col items-center justify-center text-center transition-all hover:border-pink-500/50 shadow-sm overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-[2.5rem]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
           <Instagram size={40} className="text-pink-500 mb-4 group-hover:scale-110 transition-transform" />
           <h3 className="text-lg font-black italic text-on-surface uppercase tracking-tighter">
             Follow Helios
