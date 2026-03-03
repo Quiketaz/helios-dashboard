@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Calendar, Clock, User, AlertCircle, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, User, AlertCircle, Zap, ChevronLeft, ChevronRight, CalendarOff } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { getWeekRange, formatWeekLabel, getEventsForWeek, parseDate } from '../utils/dateUtils';
 import { Logo } from '../components/Logo';
@@ -21,29 +21,29 @@ export const ScheduleView = () => {
     <div className="space-y-6 pb-24 lg:pb-0">
       {/* Header with Logo */}
       <div className="flex flex-col md:items-center justify-center pt-4 pb-2">
-        <div className="flex items-center gap-3 mb-1 md:mb-2">
+        <div className="flex flex-wrap justify-center items-center gap-3 mb-1 md:mb-2">
           <Logo size="sm" />
-          <h1 className="text-2xl md:text-4xl font-black text-white italic tracking-tighter uppercase">
-            F3 <span className="text-yellow-400">HELIOS</span>
+          <h1 className="text-2xl md:text-4xl font-black text-on-surface italic tracking-tighter uppercase">
+            F3 <span className="text-primary">HELIOS</span>
           </h1>
         </div>
-        <p className="text-zinc-500 font-bold uppercase tracking-widest text-[10px] md:text-xs">The Weinke & Events</p>
+        <p className="text-on-surface-variant font-bold uppercase tracking-widest text-[0.625rem] md:text-xs">The Weinke & Events</p>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="text-yellow-400 font-black italic tracking-widest animate-pulse">LOADING Q SCHEDULE...</div>
+          <div className="text-primary font-black italic tracking-widest animate-pulse">LOADING Q SCHEDULE...</div>
         </div>
       ) : error ? (
         <div className="flex items-center justify-center py-20">
-          <div className="flex items-center gap-3 px-6 py-4 bg-red-900/20 border border-red-500/50 rounded-2xl text-red-400 font-bold">
+          <div className="flex items-center gap-3 px-6 py-4 bg-surface-container-highest border border-outline-variant/50 rounded-2xl text-on-surface font-bold">
             <AlertCircle size={20} />
             {error}
           </div>
         </div>
       ) : qList.length === 0 ? (
         <div className="flex items-center justify-center py-20">
-          <div className="text-zinc-500 font-bold italic text-center">
+          <div className="text-on-surface-variant font-bold italic text-center">
             <Calendar size={40} className="mx-auto mb-4 opacity-50" />
             No upcoming workouts scheduled
           </div>
@@ -77,11 +77,19 @@ export const ScheduleView = () => {
 
           {/* Events for Week */}
           {weekEvents.length === 0 ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="text-zinc-500 font-bold italic text-center">
-                <Calendar size={40} className="mx-auto mb-4 opacity-50" />
-                No workouts scheduled for this week
+            <div className="flex flex-col items-center justify-center py-16 px-6 text-center border-2 border-dashed border-outline-variant/30 rounded-3xl bg-surface-container-low/50 mx-2 mt-4">
+              <div className="bg-primary/10 p-5 rounded-2xl mb-4">
+                <CalendarOff className="w-10 h-10 text-primary" />
               </div>
+              <h3 className="text-xl font-black text-on-surface mb-2 uppercase tracking-tight">
+                No Workouts Planned
+              </h3>
+              <p className="text-on-surface-variant max-w-sm leading-relaxed text-sm font-medium">
+                It looks like there are no workouts scheduled for this week.
+                <span className="text-xs text-on-surface-variant/70 mt-2 block font-normal">
+                  Check back later or select a different week to view the schedule.
+                </span>
+              </p>
             </div>
           ) : (
             <div className="grid gap-3">
@@ -102,9 +110,9 @@ export const ScheduleView = () => {
                     <div className="relative z-10 flex items-center gap-4 md:gap-8">
                       {/* Date Block */}
                       <div className="flex-shrink-0 flex flex-col items-center justify-center bg-surface-container-highest rounded-xl w-14 h-14 md:w-20 md:h-20 border border-outline-variant/30 shadow-inner">
-                        <span className="text-[10px] font-black text-on-surface-variant uppercase tracking-tighter">{monthShort}</span>
+                        <span className="text-[0.625rem] font-black text-on-surface-variant uppercase tracking-tighter">{monthShort}</span>
                         <span className="text-xl md:text-3xl font-black text-on-surface leading-none my-0.5">{dayNum}</span>
-                        <span className="text-[10px] font-black text-primary uppercase">{q.day.substring(0, 3)}</span>
+                        <span className="text-[0.625rem] font-black text-primary uppercase">{q.day.substring(0, 3)}</span>
                       </div>
 
                       {/* Info Block */}
@@ -112,7 +120,7 @@ export const ScheduleView = () => {
                         <div>
                           <div className="flex items-center gap-1.5 mb-0.5">
                             <User size={12} className="text-primary/50" />
-                            <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.15em]">Q Lead</span>
+                            <span className="text-[0.625rem] font-bold text-on-surface-variant uppercase tracking-[0.15em]">Q Lead</span>
                           </div>
                           <div className="text-lg md:text-2xl font-black text-on-surface group-hover:text-primary transition-colors tracking-tight">
                             {q.q || 'OPEN'}
@@ -122,14 +130,14 @@ export const ScheduleView = () => {
                         <div className="flex flex-wrap items-center gap-2">
                           <div className="flex items-center gap-1 bg-surface-container-highest border border-outline-variant/20 px-2 py-0.5 rounded-md">
                             <Clock size={10} className="text-on-surface-variant" />
-                            <span className="text-[10px] font-bold text-on-surface">{q.time || '05:30'}</span>
+                            <span className="text-[0.625rem] font-bold text-on-surface">{q.time || '05:30'}</span>
                           </div>
                           <div className="flex items-center gap-1 bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-md">
                             <Zap size={10} className="text-primary" />
-                            <span className="text-[10px] font-bold text-primary">{q.type || 'Bootcamp'}</span>
+                            <span className="text-[0.625rem] font-bold text-primary">{q.type || 'Bootcamp'}</span>
                           </div>
                           {q.notes && q.notes !== 'Bootcamp' && (
-                            <span className="text-[10px] text-on-surface-variant italic truncate max-w-[100px] md:max-w-none">{q.notes}</span>
+                            <span className="text-[0.625rem] text-on-surface-variant italic truncate max-w-[6.25rem] md:max-w-none">{q.notes}</span>
                           )}
                         </div>
                       </div>

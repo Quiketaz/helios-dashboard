@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Moon, Sun, Monitor, Check, Palette } from 'lucide-react';
+import { Moon, Sun, Monitor, Check, Palette, Type } from 'lucide-react';
 import { DashboardCard } from '../components/DashboardCard';
 
 type ThemeMode = 'light' | 'dark' | 'system';
@@ -25,6 +25,19 @@ export const SettingsView = () => {
     
     localStorage.setItem('theme', mode);
   }, [mode]);
+
+  const [bigText, setBigText] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('bigText') === 'true';
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    bigText ? root.classList.add('big-text') : root.classList.remove('big-text');
+    localStorage.setItem('bigText', String(bigText));
+  }, [bigText]);
 
   const options: { value: ThemeMode; label: string; icon: typeof Moon }[] = [
     { value: 'light', label: 'Light', icon: Sun },
@@ -67,6 +80,27 @@ export const SettingsView = () => {
             </button>
           ))}
         </div>
+
+        <div className="flex items-center gap-3 mb-6 mt-8 pt-8 border-t border-outline-variant/10">
+          <Type className="text-primary" size={24} />
+          <h3 className="text-lg font-bold text-on-surface uppercase tracking-wide">Accessibility</h3>
+        </div>
+
+        <button
+          onClick={() => setBigText(!bigText)}
+          className={`
+            w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer text-left
+            ${bigText 
+              ? 'border-primary bg-primary/10 text-primary' 
+              : 'border-outline-variant/20 bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:border-outline-variant/40'}
+          `}
+        >
+          <div className="flex flex-col gap-1">
+            <span className="font-bold uppercase tracking-wider text-xs">Big Text Mode</span>
+            <span className="text-xs opacity-80 font-medium">Increase font size & icon contrast</span>
+          </div>
+          {bigText && <Check size={20} strokeWidth={3} />}
+        </button>
       </DashboardCard>
     </div>
   );

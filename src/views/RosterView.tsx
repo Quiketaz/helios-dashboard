@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, UserX } from 'lucide-react';
 //import type { PaxData } from '../types';
 import { useData } from '../context/DataContext';
+import { useScrollPosition } from '../hooks/useScrollPosition';
+import { getAwardIcon, getAwardLabel } from '../utils/f3';
 
 const ITEMS_PER_PAGE = 15;
 
 export const RosterView = () => {
-  const { filteredPax, setSelectedPax: onPaxClick } = useData();
+  const { filteredPax, setSelectedPax: onPaxClick, searchTerm, setSearchTerm } = useData();
+  useScrollPosition('roster-scroll-pos');
   const [currentPage, setCurrentPage] = useState(1);
   const [prevFilteredPax, setPrevFilteredPax] = useState(filteredPax);
 
@@ -22,16 +25,36 @@ export const RosterView = () => {
 
   return (
     <div className="space-y-6 mb-24 lg:mb-0">
-      <section className="bg-surface border border-outline-variant/20 rounded-[2rem] overflow-hidden shadow-sm">
+      {filteredPax.length === 0 && searchTerm ? (
+        <div className="flex flex-col items-center justify-center py-12 px-4 text-center animate-in fade-in duration-300">
+          <div className="bg-surface-container-highest p-4 rounded-full mb-4">
+            <UserX className="w-8 h-8 text-on-surface-variant" />
+          </div>
+          <h3 className="text-lg font-bold text-on-surface mb-1">
+            No PAX Found
+          </h3>
+          <p className="text-on-surface-variant mb-6 max-w-xs text-sm">
+            We couldn't find any PAX matching "{searchTerm}".
+          </p>
+          <button
+            onClick={() => setSearchTerm && setSearchTerm('')}
+            className="px-6 py-2.5 text-sm font-black text-on-primary bg-primary rounded-full hover:bg-primary/90 active:scale-95 transition-all shadow-sm uppercase tracking-wide"
+          >
+            Clear Search
+          </button>
+        </div>
+      ) : (
+        <>
+      <section className="bg-surface border border-outline-variant/20 rounded-3xl overflow-hidden shadow-sm">
         <table className="w-full text-left border-collapse hidden md:table">
           <thead>
             <tr className="bg-surface-container">
-              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest">PAX Name</th>
-              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest text-center">Postings</th>
-              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest text-center">Consistency</th>
-              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest">First BD</th>
-              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest">Last BD</th>
-              <th className="p-5 text-[10px] font-black uppercase text-on-surface-variant tracking-widest">Awards</th>
+              <th className="p-5 text-[0.625rem] font-black uppercase text-on-surface-variant tracking-widest">PAX Name</th>
+              <th className="p-5 text-[0.625rem] font-black uppercase text-on-surface-variant tracking-widest text-center">Postings</th>
+              <th className="p-5 text-[0.625rem] font-black uppercase text-on-surface-variant tracking-widest text-center">Consistency</th>
+              <th className="p-5 text-[0.625rem] font-black uppercase text-on-surface-variant tracking-widest">First BD</th>
+              <th className="p-5 text-[0.625rem] font-black uppercase text-on-surface-variant tracking-widest">Last BD</th>
+              <th className="p-5 text-[0.625rem] font-black uppercase text-on-surface-variant tracking-widest">Awards</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-outline-variant/10">
@@ -59,7 +82,7 @@ export const RosterView = () => {
                 </td>
                 <td className="p-5 font-black text-on-surface text-center">{p.posts}</td>
                 <td className="p-5 text-center">
-                  <span className={`text-xs font-bold ${p.consistency > 50 ? 'text-green-500' : 'text-zinc-500'}`}>
+                  <span className={`text-xs font-bold ${p.consistency > 50 ? 'text-primary' : 'text-on-surface-variant'}`}>
                     {p.consistency}%
                   </span>
                 </td>
@@ -69,12 +92,12 @@ export const RosterView = () => {
                   <div className="flex gap-2">
                     {p.awards.map(a => (
                       <span key={a} className="grayscale hover:grayscale-0 transition-all cursor-help" title={a}>
-                        {a.startsWith('Cindy') ? '🧱' : a.startsWith('Mug') ? '☕' : (
+                        {getAwardIcon(a) !== '👕' ? getAwardIcon(a) : (
                           <span className="relative inline-block">
-                            👕
-                            {a.includes(':') && (
-                              <span className="absolute -top-1 -right-1 bg-primary text-[8px] text-on-primary font-black px-0.5 rounded-sm leading-none">
-                                {a.split(':')[1]}
+                            {getAwardIcon(a)}
+                            {getAwardLabel(a) && (
+                              <span className="absolute -top-1 -right-1 bg-primary text-[0.5rem] text-on-primary font-black px-0.5 rounded-sm leading-none">
+                                {getAwardLabel(a)}
                               </span>
                             )}
                           </span>
@@ -111,11 +134,11 @@ export const RosterView = () => {
                 <div>
                   <div className="font-bold text-on-surface">{p.name}</div>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <div className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Last: {p.lastBD}</div>
+                    <div className="text-[0.625rem] text-on-surface-variant font-bold uppercase tracking-widest">Last: {p.lastBD}</div>
                     <div className="flex gap-1">
                       {p.awards.map(a => (
                         <span key={a} className="text-xs">
-                          {a.startsWith('Cindy') ? '🧱' : a.startsWith('Mug') ? '☕' : '👕'}
+                          {getAwardIcon(a)}
                         </span>
                       ))}
                     </div>
@@ -124,11 +147,11 @@ export const RosterView = () => {
               </div>
               <div className="flex flex-col items-end gap-1">
                 {p.awards.some(a => a.toLowerCase().startsWith('shirt')) && (
-                  <span className="text-[9px] font-black text-primary border border-primary/30 bg-primary/10 px-1.5 py-0.5 rounded-md uppercase tracking-tighter">Centurion</span>
+                  <span className="text-[0.5625rem] font-black text-primary border border-primary/30 bg-primary/10 px-1.5 py-0.5 rounded-md uppercase tracking-tighter">Centurion</span>
                 )}
                 <div className="flex flex-col items-end">
                   <div className="text-lg font-black text-primary">{p.posts}</div>
-                  <div className="text-[10px] font-bold text-on-surface-variant uppercase">Postings</div>
+                  <div className="text-[0.625rem] font-bold text-on-surface-variant uppercase">Postings</div>
                 </div>
               </div>
             </div>
@@ -162,6 +185,8 @@ export const RosterView = () => {
             </button>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

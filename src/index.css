@@ -45,6 +45,14 @@
     --color-outline: #79747E;
     --color-outline-variant: #C4C7C5;
   }
+
+  :root.big-text {
+    font-size: 125%;
+  }
+
+  :root.big-text svg {
+    stroke-width: 3px;
+  }
 }
 
 @theme {
