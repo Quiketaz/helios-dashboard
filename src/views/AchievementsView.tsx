@@ -1,70 +1,28 @@
-import { getAwardIcon } from '../utils/f3';
-import { Logo } from '../components/Logo';
 import { Target, Map, Crown } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { ACHIEVEMENTS, SPECIALTY_MISSIONS, getRarityColor } from '../utils/achievements';
+
+// --- Reusable Badge Component ---
+const AchievementBadge = ({ icon: Icon, rarity }: { icon: LucideIcon; rarity: string }) => {
+  // Rarity Color Logic
+  const getStyles = () => {
+    const base = getRarityColor(rarity);
+    // Add glow effects specific to this view
+    if (rarity === 'Legendary') return `${base} shadow-[0_0_20px_rgba(239,68,68,0.4)]`;
+    if (rarity === 'Rare') return `${base} shadow-[0_0_15px_rgba(255,215,0,0.4)]`;
+    if (rarity === 'Epic') return `${base} shadow-[0_0_15px_rgba(192,132,252,0.4)]`;
+    if (rarity === 'Uncommon') return `${base} shadow-[0_0_10px_rgba(96,165,250,0.3)]`;
+    return base;
+  };
+
+  return (
+    <div className={`w-16 h-16 rounded-full flex items-center justify-center border-2 transition-all duration-500 group-hover:scale-110 ${getStyles()}`}>
+      <Icon size={32} strokeWidth={1.5} />
+    </div>
+  );
+};
 
 export const AchievementsView = () => {
-  const achievements = [
-    {
-      name: 'The Cindy',
-      key: 'Cindy',
-      criteria: '10 Posts',
-      description: 'Named after the benchmark WOD. Reaching 10 posts signifies you have built the habit and are locked in.',
-      rarity: 'Common',
-      color: 'text-on-surface-variant'
-    },
-    {
-      name: 'The Mug',
-      key: 'Mug',
-      criteria: '75 Posts',
-      description: 'A pillar of the community. 75 posts demonstrates consistency and dedication to the gloom.',
-      rarity: 'Uncommon',
-      color: 'text-blue-400'
-    },
-    {
-      name: 'Centurion',
-      key: 'Shirt', // Maps to 👕
-      criteria: '100 Posts',
-      description: 'The elite. 100 posts. You have achieved the century mark.',
-      rarity: 'Rare',
-      color: 'text-primary'
-    },
-    {
-      name: 'The Headband',
-      key: 'Headband',
-      criteria: '250 Posts',
-      description: 'You have earned your stripes. A Headband marks the transition from participant to committed leader.',
-      rarity: 'Legendary',
-      color: 'text-red-400'
-    }
-  ];
-
-  const missions = [
-    {
-      name: 'CSAUP',
-      criteria: 'Event',
-      description: 'Completed a Completely Stupid And Utterly Pointless event.',
-      icon: '🏔️',
-      rarity: 'Epic',
-      color: 'text-purple-400'
-    },
-    {
-      name: 'Iron Pax',
-      criteria: 'Challenge',
-      description: 'Participated in the annual Iron Pax Challenge.',
-      icon: '⚔️',
-      rarity: 'Legendary',
-      color: 'text-primary'
-    },
-    {
-      name: 'Q Source',
-      criteria: 'Leadership',
-      description: 'Attended Q Source leadership development training.',
-      icon: '🧠',
-      rarity: 'Rare',
-      color: 'text-blue-400'
-    }
-  ];
-
   const journey = [
     { name: 'FNG', desc: 'Show up. Work out.', icon: '🌱' },
     { name: 'The Naming', desc: 'Earn your handle.', icon: '🏷️' },
@@ -75,17 +33,12 @@ export const AchievementsView = () => {
 
   return (
     <div className="space-y-12 pb-24 lg:pb-0 animate-in fade-in duration-500">
-       {/* Header */}
-      <div className="flex flex-col md:items-center justify-center pt-4 pb-2">
-        <div className="flex flex-wrap justify-center items-center gap-3 mb-1 md:mb-2">
-          <Logo size="sm" />
-          <h1 className="text-2xl md:text-4xl font-black text-on-surface italic tracking-tighter uppercase">
-            Hall of <span className="text-primary">Glory</span>
-          </h1>
-        </div>
-        <p className="text-on-surface-variant font-bold uppercase tracking-widest text-[0.625rem] md:text-xs">
-          Achievements & Milestones
-        </p>
+      {/* View Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black italic text-on-surface uppercase tracking-tighter">
+          Hall of <span className="text-primary">Glory</span>
+        </h1>
+        <p className="text-on-surface-variant font-bold uppercase tracking-widest text-xs">Achievements & Milestones</p>
       </div>
 
       {/* Hall of Glory */}
@@ -95,20 +48,17 @@ export const AchievementsView = () => {
         <h2 className="text-lg font-black text-on-surface uppercase tracking-wider">Hall of Glory</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {achievements.map((award) => (
+        {ACHIEVEMENTS.map((award) => (
           <div 
-            key={award.key}
+            key={award.id}
             className="relative overflow-hidden bg-surface-container-low border border-outline-variant/20 rounded-3xl p-6 hover:bg-surface-container-high transition-all group"
           >
             <div className="absolute -right-6 -top-6 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity pointer-events-none rotate-12 text-on-surface scale-150">
-               {/* Background Icon Effect */}
-               <span className="text-9xl grayscale">{getAwardIcon(award.key)}</span>
+               <award.icon size={120} />
             </div>
 
             <div className="relative z-10 flex items-start gap-5">
-              <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-surface-container-highest border border-outline-variant/30 flex items-center justify-center text-4xl shadow-inner">
-                {getAwardIcon(award.key)}
-              </div>
+              <AchievementBadge icon={award.icon} rarity={award.rarity} />
               
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
@@ -125,12 +75,7 @@ export const AchievementsView = () => {
                 </p>
 
                 <div className="flex items-center gap-2">
-                  <span className={`text-[0.625rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
-                    award.rarity === 'Legendary' ? 'bg-primary/10 text-primary border-primary/20' :
-                    award.rarity === 'Rare' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                    award.rarity === 'Uncommon' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                    'bg-surface-container text-on-surface-variant border-outline-variant/20'
-                  }`}>
+                  <span className={`text-[0.625rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${getRarityColor(award.rarity)}`}>
                     {award.rarity}
                   </span>
                 </div>
@@ -148,11 +93,11 @@ export const AchievementsView = () => {
           <h2 className="text-lg font-black text-on-surface uppercase tracking-wider">Specialty Missions</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {missions.map((mission) => (
+          {SPECIALTY_MISSIONS.map((mission) => (
             <div key={mission.name} className="bg-surface-container-low border border-outline-variant/20 rounded-2xl p-4 hover:bg-surface-container-high transition-colors">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">{mission.icon}</span>
-                <span className={`text-[0.625rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-surface-container ${mission.color.replace('text-', 'border-').replace('400', '500/20')} ${mission.color}`}>
+                <mission.icon size={24} className={mission.rarity === 'Legendary' ? 'text-primary' : mission.rarity === 'Epic' ? 'text-purple-400' : mission.rarity === 'Rare' ? 'text-blue-400' : 'text-on-surface-variant'} />
+                <span className="text-[0.625rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-surface-container border-outline-variant/20 text-on-surface-variant">
                   {mission.rarity}
                 </span>
               </div>

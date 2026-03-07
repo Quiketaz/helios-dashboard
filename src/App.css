@@ -40,3 +40,12 @@
   /* Use theme variable for consistent text hierarchy */
   color: var(--color-on-surface-variant);
 }
+
+/* Utility for horizontal scrolling areas */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

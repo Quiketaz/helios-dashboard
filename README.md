@@ -14,6 +14,8 @@ The Helios Dashboard transforms community attendance data into an interactive ex
 - **📜 Mission Timeline** - A vertical workout history log showing AO locations, workout types, and "Q Lead" (leadership) status.
 - **📅 Q Schedule** - Upcoming workouts with Q leads, times, and locations
 - **🔐 Admin Portal** - Multi-format CSV data ingestion (roster, attendance history, Q analytics)
+- **🏆 Hall of Glory** - Dedicated achievements view tracking milestones (Cindy, Mug, Centurion, Headband) and specialty missions.
+- **📸 Social Sharing** - Generate and download shareable "Player Cards" with RPG stats and earned badges.
 - **🎨 Personalization** - Light/Dark/System theme switching and "Big Text" accessibility mode.
 - **📱 PWA Ready** - Installable as a native-like app with offline capabilities.
 - **🌐 Dual Data Sources** - Online Google Sheets sync + local CSV files for training/offline access
@@ -32,12 +34,15 @@ The Helios Dashboard transforms community attendance data into an interactive ex
 | **Lucide React** | 0.563 | Icon library |
 | **PapaParse** | 5.5 | CSV parsing |
 | **ESLint** | 9.39 | Code linting |
+| **html-to-image** | 1.11 | Social card generation |
+| **Vite PWA** | 0.19 | Offline support & installability |
 
 ## Project Structure
 
 ```
 src/
 ├── components/
+│   ├── ShareProfile.tsx      # Image generation modal
 │   └── StatCard.tsx          # Reusable stat card component
 ├── hooks/
 │   └── usePaxData.ts         # Custom hook for data fetching & caching
@@ -46,6 +51,9 @@ src/
 ├── views/
 │   ├── DashboardView.tsx     # Main analytics dashboard
 │   ├── RosterView.tsx        # Member roster table
+│   ├── AchievementsView.tsx  # Awards & Milestones gallery
+│   ├── ProfileView.tsx       # Detailed player stats & sharing
+│   ├── SettingsView.tsx      # Theme & preferences
 │   └── IngestorView.tsx      # Admin data management
 │   └── ScheduleView.tsx      # Weekly Q schedule grid
 ├── App.tsx                   # Main application shell
@@ -101,6 +109,7 @@ public/data/
 ├── sample-roster.csv              # Demo data
 ├── Helios Q Sheet - Attendance.csv # 3,900+ attendance records ⭐
 ├── Helios Q Sheet - Postings Count.csv
+├── Helios Q Sheet - Q Sheet.csv   # Schedule data
 └── manifest.json                  # File listing
 ```
 

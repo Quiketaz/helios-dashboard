@@ -47,9 +47,12 @@ export const SettingsView = () => {
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-3xl font-black italic text-primary uppercase tracking-tighter">Settings</h2>
-        <p className="text-on-surface-variant font-medium">Customize your Helios dashboard experience.</p>
+      {/* View Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black italic text-on-surface uppercase tracking-tighter">
+          System <span className="text-primary">Settings</span>
+        </h1>
+        <p className="text-on-surface-variant font-bold uppercase tracking-widest text-xs">Configuration & Preferences</p>
       </div>
 
       <DashboardCard className="p-6 md:p-8 border border-outline-variant/20">

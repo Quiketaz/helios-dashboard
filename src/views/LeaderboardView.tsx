@@ -4,12 +4,14 @@ import { useData } from '../context/DataContext';
 import { calculateRPGStats } from '../utils/utils';
 import { AwardBadge } from '../components/AwardBadge';
 //import type { PaxData } from '../types';
+import { applyDynamicAchievements } from '../hooks/usePaxAchievements';
 
 export const LeaderboardView = () => {
   const { filteredPax, setSelectedPax } = useData();
 
   const rankedPax = useMemo(() => {
     return filteredPax
+      .map(applyDynamicAchievements)
       .map(p => ({
         ...p,
         stats: calculateRPGStats(p)

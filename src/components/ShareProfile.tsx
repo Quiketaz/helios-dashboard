@@ -7,13 +7,7 @@ import { calculateRPGStats } from '../utils/f3Logic';
 import { getClassColor, getClassBgColor, getClassTextColor } from '../utils/utils';
 import { Logo } from './Logo';
 import type { PaxData } from '../types';
-
-const ACHIEVEMENT_DEFS = [
-  { id: 'cindy', name: 'Cindy', icon: '🧱' },
-  { id: 'mug', name: 'Mug', icon: '☕' },
-  { id: 'shirt', name: 'Centurion', icon: '👕' },
-  { id: 'headband', name: 'Headband', icon: '🤕' },
-];
+import { ACHIEVEMENTS } from '../utils/achievements';
 
 // --- Internal Card Component ---
 const ShareableCard = ({ pax }: { pax: PaxData }) => {
@@ -22,7 +16,7 @@ const ShareableCard = ({ pax }: { pax: PaxData }) => {
   const classBg = getClassBgColor(stats.class);
   const classText = getClassTextColor(stats.class);
 
-  const displayedAwards = ACHIEVEMENT_DEFS.filter(def => 
+  const displayedAwards = ACHIEVEMENTS.filter(def => 
     pax.awards.some(a => a.toLowerCase().startsWith(def.id))
   ).slice(0, 4);
 
@@ -56,7 +50,7 @@ const ShareableCard = ({ pax }: { pax: PaxData }) => {
               {displayedAwards.map((award) => (
                 <div key={award.id} className="flex flex-col items-center" title={award.name}>
                   <div className="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant/30 flex items-center justify-center text-xl shadow-inner">
-                    {award.icon}
+                    <award.icon size={20} className="text-primary" />
                   </div>
                 </div>
               ))}

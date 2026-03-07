@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { Calendar, Clock, User, AlertCircle, Zap, ChevronLeft, ChevronRight, CalendarOff } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { getWeekRange, formatWeekLabel, getEventsForWeek, parseDate } from '../utils/dateUtils';
-import { Logo } from '../components/Logo';
 
 export const ScheduleView = () => {
   const { qList, qLoading: loading, qError: error, searchTerm } = useData();
@@ -19,15 +18,12 @@ export const ScheduleView = () => {
 
   return (
     <div className="space-y-6 pb-24 lg:pb-0">
-      {/* Header with Logo */}
-      <div className="flex flex-col md:items-center justify-center pt-4 pb-2">
-        <div className="flex flex-wrap justify-center items-center gap-3 mb-1 md:mb-2">
-          <Logo size="sm" />
-          <h1 className="text-2xl md:text-4xl font-black text-on-surface italic tracking-tighter uppercase">
-            F3 <span className="text-primary">HELIOS</span>
-          </h1>
-        </div>
-        <p className="text-on-surface-variant font-bold uppercase tracking-widest text-[0.625rem] md:text-xs">The Weinke & Events</p>
+      {/* View Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black italic text-on-surface uppercase tracking-tighter">
+          Q <span className="text-primary">Schedule</span>
+        </h1>
+        <p className="text-on-surface-variant font-bold uppercase tracking-widest text-xs">The Weinke & Upcoming Events</p>
       </div>
 
       {loading ? (

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Calendar, Target, Instagram, User, Trophy } from 'lucide-react';
+import { Calendar, Target, Instagram, User } from 'lucide-react';
 import { Logo } from '../components/Logo';
 import { PaxSpotlight } from '../components/OperatorCard';
 import { WeatherCard } from '../components/WeatherCard';
@@ -34,6 +34,13 @@ export const DashboardView = () => {
 
   return (
     <div className="space-y-10 pb-20 lg:pb-0">
+      {/* View Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black italic text-on-surface uppercase tracking-tighter">
+          Command <span className="text-primary">Center</span>
+        </h1>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div className="hidden md:block lg:col-span-2">
           <PaxSpotlight pax={spotlightPax} />
@@ -74,12 +81,6 @@ export const DashboardView = () => {
       </div>
 
       <div className="space-y-4">
-        <div className="px-2">
-          <h2 className="text-xl font-black italic text-on-surface uppercase tracking-tight flex items-center gap-2">
-            <Trophy size={20} className="text-primary" />
-            Hall of Fame
-          </h2>
-        </div>
         <HallOfFame paxList={filteredPax} onPaxClick={setSelectedPax} />
       </div>
 

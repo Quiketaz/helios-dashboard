@@ -5,6 +5,7 @@ import { DashboardCard } from './DashboardCard';
 import { calculateRPGStats } from '../utils/f3Logic';
 import { parseDate } from '../utils/dateUtils';
 import type { PaxData } from '../types';
+import { applyDynamicAchievements } from '../hooks/usePaxAchievements';
 
 interface HallOfFameProps {
   paxList: PaxData[];
@@ -17,7 +18,8 @@ export const HallOfFame = ({ paxList, onPaxClick }: HallOfFameProps) => {
   const [sortMode, setSortMode] = useState<SortMode>('consistency');
 
   const sortedPax = useMemo(() => {
-    let sorted = [...paxList];
+    // Apply dynamic achievements (e.g. Headband) to ensure consistency with Roster/Profile
+    let sorted = paxList.map(applyDynamicAchievements);
     
     if (sortMode === 'consistency') {
       sorted.sort((a, b) => b.consistency - a.consistency);

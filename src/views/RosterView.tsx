@@ -3,7 +3,8 @@ import { ChevronLeft, ChevronRight, UserX } from 'lucide-react';
 //import type { PaxData } from '../types';
 import { useData } from '../context/DataContext';
 import { useScrollPosition } from '../hooks/useScrollPosition';
-import { getAwardIcon, getAwardLabel } from '../utils/f3';
+import { AwardBadge } from '../components/AwardBadge';
+import { applyDynamicAchievements } from '../hooks/usePaxAchievements';
 
 const ITEMS_PER_PAGE = 15;
 
@@ -21,15 +22,20 @@ export const RosterView = () => {
 
   const totalPages = Math.ceil(filteredPax.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedPax = filteredPax.slice(startIndex, startIndex + ITEMS_PER_PAGE).map(p => ({
-    ...p,
-    awards: p.posts >= 250 && !p.awards.some(a => a.startsWith('Headband'))
-      ? [...p.awards, 'Headband']
-      : p.awards
-  }));
+  const paginatedPax = filteredPax
+    .slice(startIndex, startIndex + ITEMS_PER_PAGE)
+    .map(applyDynamicAchievements);
 
   return (
     <div className="space-y-6 mb-24 lg:mb-0">
+      {/* View Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-black italic text-on-surface uppercase tracking-tighter">
+          PAX <span className="text-primary">Roster</span>
+        </h1>
+        <p className="text-on-surface-variant font-bold uppercase tracking-widest text-xs">Active Personnel Database</p>
+      </div>
+
       {filteredPax.length === 0 && searchTerm ? (
         <div className="flex flex-col items-center justify-center py-12 px-4 text-center animate-in fade-in duration-300">
           <div className="bg-surface-container-highest p-4 rounded-full mb-4">
@@ -95,20 +101,7 @@ export const RosterView = () => {
                 <td className="p-5 text-xs text-on-surface-variant font-medium">{p.lastBD}</td>
                 <td className="p-5">
                   <div className="flex gap-2">
-                    {p.awards.map(a => (
-                      <span key={a} className="grayscale hover:grayscale-0 transition-all cursor-help" title={a}>
-                        {getAwardIcon(a) !== '👕' ? getAwardIcon(a) : (
-                          <span className="relative inline-block">
-                            {getAwardIcon(a)}
-                            {getAwardLabel(a) && (
-                              <span className="absolute -top-1 -right-1 bg-primary text-[0.5rem] text-on-primary font-black px-0.5 rounded-sm leading-none">
-                                {getAwardLabel(a)}
-                              </span>
-                            )}
-                          </span>
-                        )}
-                      </span>
-                    ))}
+                    {p.awards.map(a => <AwardBadge key={a} award={a} />)}
                   </div>
                 </td>
               </tr>
@@ -141,11 +134,7 @@ export const RosterView = () => {
                   <div className="flex items-center gap-2 mt-0.5">
                     <div className="text-[0.625rem] text-on-surface-variant font-bold uppercase tracking-widest">Last: {p.lastBD}</div>
                     <div className="flex gap-1">
-                      {p.awards.map(a => (
-                        <span key={a} className="text-xs">
-                          {getAwardIcon(a)}
-                        </span>
-                      ))}
+                      {p.awards.map(a => <AwardBadge key={a} award={a} />)}
                     </div>
                   </div>
                 </div>
