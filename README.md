@@ -14,6 +14,8 @@ The Helios Dashboard transforms community attendance data into an interactive ex
 - **📜 Mission Timeline** - A vertical workout history log showing AO locations, workout types, and "Q Lead" (leadership) status.
 - **📅 Q Schedule** - Upcoming workouts with Q leads, times, and locations
 - **🔐 Admin Portal** - Multi-format CSV data ingestion (roster, attendance history, Q analytics)
+- **🎨 Personalization** - Light/Dark/System theme switching and "Big Text" accessibility mode.
+- **📱 PWA Ready** - Installable as a native-like app with offline capabilities.
 - **🌐 Dual Data Sources** - Online Google Sheets sync + local CSV files for training/offline access
 - **🌐 Live Data Integration** - Automatic synchronization with published Google Sheets, with demo fallback
 - **📱 Responsive Design** - Mobile-optimized UI with adaptive navigation
@@ -25,7 +27,7 @@ The Helios Dashboard transforms community attendance data into an interactive ex
 |------|---------|---------|
 | **React** | 19.2 | UI Framework |
 | **TypeScript** | 5.9 | Type-safe development |
-| **Vite** | 7.2 | Build tool & dev server |
+| **Vite** | 5.4 | Build tool & dev server |
 | **Tailwind CSS** | 4.1 | Atomic CSS with M3 Tonal Palettes |
 | **Lucide React** | 0.563 | Icon library |
 | **PapaParse** | 5.5 | CSV parsing |

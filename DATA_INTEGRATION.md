@@ -4,7 +4,7 @@
 
 ## Overview
 
-Your **Helios Dashboard** integrates with multiple data sources in real-time:
+Your **Helios Dashboard** integrates with multiple data sources in real-time to power the Roster, Analytics, and Schedule:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
