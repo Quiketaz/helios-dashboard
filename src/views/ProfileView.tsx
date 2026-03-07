@@ -7,9 +7,10 @@ import { calculateRPGStats } from '../utils/f3Logic';
 import { useData } from '../context/DataContext';
 
 const ACHIEVEMENT_DEFS = [
-  { id: 'shirt', name: 'Centurion', icon: '👕', requirement: 'Earned at 100 Posts', target: 100 },
-  { id: 'mug', name: 'Mug', icon: '☕', requirement: 'Lead 10 Workouts', target: 10 },
-  { id: 'cindy', name: 'Cindy', icon: '🧱', requirement: 'Complete the Cindy Challenge', target: 1 },
+  { id: 'cindy', name: 'Cindy', icon: '🧱', requirement: '10 Posts', target: 10 },
+  { id: 'mug', name: 'Mug', icon: '☕', requirement: '75 Posts', target: 75 },
+  { id: 'shirt', name: 'Centurion', icon: '👕', requirement: '100 Posts', target: 100 },
+  { id: 'headband', name: 'Headband', icon: '🤕', requirement: '250 Posts', target: 250 },
 ];
 
 export const ProfileView = () => {
@@ -39,6 +40,29 @@ export const ProfileView = () => {
     m.push({ label: 'Initial Deployment', date: pax.firstBD });
     return m;
     }, [pax.firstBD, pax.lastBD, pax.vqDate]);
+
+  // Calculate progress to next milestone
+  const currentPosts = pax.posts;
+  const nextMilestone = ACHIEVEMENT_DEFS.find(m => m.target > currentPosts);
+  const prevMilestone = [...ACHIEVEMENT_DEFS].reverse().find(m => m.target <= currentPosts);
+  
+  let progressPercent = 0;
+  let progressLabel = '';
+  let nextMilestoneDisplay = null;
+
+  if (nextMilestone) {
+    const prevCount = prevMilestone ? prevMilestone.target : 0;
+    const totalRange = nextMilestone.target - prevCount;
+    const progress = currentPosts - prevCount;
+    progressPercent = Math.min(100, Math.max(0, (progress / totalRange) * 100));
+    progressLabel = `${nextMilestone.target - currentPosts} posts until ${nextMilestone.name}`;
+    nextMilestoneDisplay = nextMilestone;
+  } else {
+    progressPercent = 100;
+    progressLabel = 'All milestones achieved!';
+    nextMilestoneDisplay = { name: 'Legend', icon: '👑', target: currentPosts };
+  }
+
   return (
     <div className="min-h-screen bg-surface pb-20 selection:bg-primary/30">
       {/* Header with Back Button */}
@@ -66,6 +90,35 @@ export const ProfileView = () => {
 
       {/* Stats Grid */}
       <div className="px-3 md:px-10 -mt-6 md:-mt-24 relative z-10 max-w-5xl mx-auto space-y-4 md:space-y-8">
+        {/* Next Milestone Progress */}
+        <div className="bg-surface-container border border-outline-variant/20 rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 shadow-sm">
+          <div className="flex justify-between items-end mb-3">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Next Milestone</span>
+              <span className="text-lg font-black text-on-surface flex items-center gap-2">
+                {nextMilestoneDisplay.name}
+                <span className="text-2xl">{nextMilestoneDisplay.icon}</span>
+              </span>
+            </div>
+            <span className="text-2xl font-black text-primary">{Math.round(progressPercent)}%</span>
+          </div>
+          
+          <div className="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-primary transition-all duration-1000 ease-out rounded-full relative overflow-hidden"
+              style={{ width: `${progressPercent}%` }}
+            >
+               <div className="absolute inset-0 bg-white/20" />
+            </div>
+          </div>
+          
+          <div className="mt-3 text-right">
+            <span className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-wider">
+              {progressLabel}
+            </span>
+          </div>
+        </div>
+
         {/* Core Attributes */}
         <div className="bg-surface-container border border-outline-variant/20 rounded-3xl md:rounded-[2.5rem] p-4 md:p-12 shadow-sm">
           <div className="mb-6 md:mb-10 text-center md:text-left">

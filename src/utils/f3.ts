@@ -6,6 +6,7 @@
 export const getAwardIcon = (award: string): string => {
   if (award.startsWith('Cindy')) return '🧱';
   if (award.startsWith('Mug')) return '☕';
+  if (award.startsWith('Headband')) return '🤕';
   return '👕';
 };
 

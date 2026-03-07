@@ -21,7 +21,12 @@ export const RosterView = () => {
 
   const totalPages = Math.ceil(filteredPax.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedPax = filteredPax.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedPax = filteredPax.slice(startIndex, startIndex + ITEMS_PER_PAGE).map(p => ({
+    ...p,
+    awards: p.posts >= 250 && !p.awards.some(a => a.startsWith('Headband'))
+      ? [...p.awards, 'Headband']
+      : p.awards
+  }));
 
   return (
     <div className="space-y-6 mb-24 lg:mb-0">
