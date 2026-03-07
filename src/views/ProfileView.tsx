@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
-import { Sword, Shield, Zap, Crown, Award, Calendar, TrendingUp, Info, History } from 'lucide-react';
+import { Sword, Shield, Zap, Crown, Award, Calendar, TrendingUp, Info, History, Share } from 'lucide-react';
 //import type { PaxData } from '../types';
 import { RadialAttribute } from '../components/RadialAttribute';
 import { getClassColor, getClassBgColor, getClassTextColor } from '../utils/utils';
 import { calculateRPGStats } from '../utils/f3Logic';
 import { useData } from '../context/DataContext';
+import { ShareProfile } from '../components/ShareProfile';
 
 const ACHIEVEMENT_DEFS = [
   { id: 'cindy', name: 'Cindy', icon: '🧱', requirement: '10 Posts', target: 10 },
@@ -15,6 +16,7 @@ const ACHIEVEMENT_DEFS = [
 
 export const ProfileView = () => {
   const { selectedPax: pax, setSelectedPax } = useData();
+  const [isShareModalOpen, setShareModalOpen] = useState(false);
 
   if (!pax) return null;
 
@@ -65,13 +67,22 @@ export const ProfileView = () => {
 
   return (
     <div className="min-h-screen bg-surface pb-20 selection:bg-primary/30">
-      {/* Header with Back Button */}
-      <button
-        onClick={onBack}
-        className="fixed top-4 left-4 md:top-6 md:left-6 z-50 px-3 py-2 md:px-5 md:py-2.5 bg-surface-container-highest/95 backdrop-blur-xl hover:bg-surface-container-highest border border-outline-variant/30 rounded-xl md:rounded-2xl text-primary font-black text-[10px] md:text-sm transition-all shadow-lg active:scale-95 flex items-center gap-2"
-      >
-        <span className="text-lg leading-none">←</span> BACK
-      </button>
+      {/* Header Buttons */}
+      <div className="fixed top-4 left-4 md:top-6 md:left-6 z-50 flex gap-2">
+        <button
+          onClick={onBack}
+          className="px-3 py-2 md:px-5 md:py-2.5 bg-surface-container-highest/95 backdrop-blur-xl hover:bg-surface-container-highest border border-outline-variant/30 rounded-xl md:rounded-2xl text-primary font-black text-[10px] md:text-sm transition-all shadow-lg active:scale-95 flex items-center gap-2"
+        >
+          <span className="text-lg leading-none">←</span> BACK
+        </button>
+        <button
+          onClick={() => setShareModalOpen(true)}
+          aria-label="Share Profile"
+          className="p-2.5 md:p-3 bg-primary/95 backdrop-blur-xl hover:bg-primary border border-white/10 rounded-xl md:rounded-2xl text-on-primary font-black transition-all shadow-lg active:scale-95 flex items-center gap-2"
+        >
+          <Share size={16} />
+        </button>
+      </div>
 
       {/* Hero Section */}
       <div className={`relative pt-16 md:pt-32 pb-12 md:pb-40 bg-gradient-to-b ${classColor} transition-all duration-500`}>
@@ -316,6 +327,10 @@ export const ProfileView = () => {
           </p>
         </div>
       </div>
+
+      {isShareModalOpen && (
+        <ShareProfile pax={pax} onClose={() => setShareModalOpen(false)} />
+      )}
     </div>
   );
 };

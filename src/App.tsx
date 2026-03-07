@@ -78,7 +78,6 @@ const AppContent = () => {
         </nav>
         <div className="text-center text-xs text-on-surface-variant/50">
           <p>F3 Helios Dashboard</p>
-          <p>v{__APP_VERSION__}</p>
         </div>
       </aside>
 
